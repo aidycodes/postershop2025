@@ -1,5 +1,6 @@
 {
   "name": "jstack-better-auth-starter",
+  "description": "Jstack Better Auth Starter",
   "version": "0.1.0",
   "private": true,
   "scripts": {
