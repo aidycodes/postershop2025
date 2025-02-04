@@ -12,6 +12,7 @@ export const RecentPost = () => {
     queryKey: ["get-recent-post"],
     queryFn: async () => {
       const res = await client.post.recent.$get()
+      console.log(res)
       return await res.json()
     },
   })

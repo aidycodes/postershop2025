@@ -26,6 +26,7 @@ const databaseMiddleware = j.middleware(async ({ c, next }) => {
 })
 
 const authMiddleware = j.middleware(async ({ c, next }) => {
+  console.log('hello', c.req.raw.headers)
   const session = await auth.api.getSession({
     headers: c.req.raw.headers
   })

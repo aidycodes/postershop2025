@@ -6,5 +6,5 @@ import { createClient } from "jstack"
  * @see https://jstack.app/docs/backend/api-client
  */
 export const client = createClient<AppRouter>({
-  baseUrl: process.env.BETTER_AUTH_URL as string,
+  baseUrl: process.env.DOMAIN_API_URL as string,
 })
