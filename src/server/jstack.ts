@@ -5,6 +5,7 @@ import { jstack } from "jstack"
 import { auth } from "@/lib/auth"
 import { HTTPException } from "hono/http-exception"
 import { nullable } from "zod"
+import { schema } from "@/server/db/schema"
 interface Env {
   Bindings: { DATABASE_URL: string }
 }
@@ -20,7 +21,7 @@ const databaseMiddleware = j.middleware(async ({ c, next }) => {
   const { DATABASE_URL } = env(c)
 
   const sql = neon(DATABASE_URL)
-  const db = drizzle(sql)
+  const db = drizzle<typeof schema>(sql)
 
   return await next({ db })
 })
