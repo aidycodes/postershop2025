@@ -16,7 +16,7 @@ const Newsletter = ({bannerImage, bannerTitle, bannerSubtitle}: {bannerImage?: s
           <div className="relative aspect-[4/3] w-full">
 
             <Image 
-              src={bannerImage || "/api/placeholder/600/400"} 
+              src={bannerImage || "/categorys/Anime.jpg"} 
               alt="Poster collection" 
               className="w-full h-full object-cover rounded-lg"
               width={600}

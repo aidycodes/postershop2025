@@ -27,15 +27,18 @@ const databaseMiddleware = j.middleware(async ({ c, next }) => {
 })
 
 const authMiddleware = j.middleware(async ({ c, next }) => {
-  console.log('hello', c.req.raw.headers)
   const session = await auth.api.getSession({
     headers: c.req.raw.headers
   })
-  console.log(session)
+
    if(!session) {
     throw new HTTPException(401, { message: "Unauthorized" })
    }
-   return await next({ session })
+   const { DATABASE_URL } = env(c)
+
+  const sql = neon(DATABASE_URL)
+  const db = drizzle(sql, { schema })
+   return await next({ session, db })
 })
 /**
  * Public (unauthenticated) procedures
@@ -43,4 +46,4 @@ const authMiddleware = j.middleware(async ({ c, next }) => {
  * This is the base piece you use to build new queries and mutations on your API.
  */
 export const publicProcedure = j.procedure.use(databaseMiddleware)
-export const protectedProcedure = j.procedure.use(authMiddleware).use(databaseMiddleware)
+export const protectedProcedure = j.procedure.use(authMiddleware)

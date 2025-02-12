@@ -7,7 +7,6 @@ const signUpSchema = z.object({
 
 export async function signUp(prevState: any, formData: FormData) {
   const email = formData.get('email')
-  console.log({email})
   const parsed = signUpSchema.safeParse({ email })
   
   if (!parsed.success) {

@@ -24,15 +24,22 @@ const CATEGORIES = [
 ]
 //['Art', 'Nature', 'Movies', 'Abstract']
 
-const Categorys = () => {
+export type Category = {
+  name: string | null;
+  image: string | null;
+}
+
+
+const Categorys = ({categories}: {categories: Category[]}) => {
+    console.log(categories)
   return (
     <div className="bg-gray-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-2xl font-semibold mb-8">Browse Categories</h3>
         <div className="flex flex-wrap justify-center gap-4">
-          {CATEGORIES.map(({ name, image }) => (
+          {categories?.map(({ name, image }) => (
             <div className="w-full sm:w-[calc(50%-8px)] md:w-[calc(25%-12px)]">
-              <CategoryItem key={name} name={name} image={image}  />
+              <CategoryItem key={name} name={name || ''} image={image || ''}  />
             </div>
           ))}
         </div>

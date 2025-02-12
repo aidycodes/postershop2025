@@ -1,19 +1,6 @@
-import { pgTable, serial, text, timestamp, index, boolean, decimal, integer, primaryKey, check, jsonb } from "drizzle-orm/pg-core"
+import { pgTable, serial, text, timestamp, index, boolean, decimal, integer, primaryKey, check, jsonb, pgEnum, numeric } from "drizzle-orm/pg-core"
 import { relations, sql } from "drizzle-orm"
 
-
-export const posts = pgTable(  //to be removed
-  "posts",
-  {
-    id: serial("id").primaryKey(),
-    name: text("name").notNull(),
-    createdAt: timestamp("createdAt").defaultNow().notNull(),
-    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-  },
-  (table) => ({
-    nameIdx: index("Post_name_idx").on(table.name),
-  })
-)
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -61,10 +48,19 @@ createdAt: timestamp('created_at'),
 updatedAt: timestamp('updated_at')
 });
 
+export const categoriesDisplayEnum = pgEnum("categories_display", ["image", "text", "image_text"])
+
 export const categories = pgTable("categories", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  image: text("image"),
+  description: text("description"),
+  display: categoriesDisplayEnum("display").default("image_text"),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull()
 });
+
+
 
 export const categoryProductRelation = relations(categories, ({ many }) => ({
   productsToCategory: many(productsToCategory),
@@ -80,7 +76,12 @@ export const products = pgTable("products", {
   extra: text("extra"),
   stock: text("stock"),
   options: jsonb("options").default('{}'),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
+  isFeatured: boolean("is_featured").default(false),
 });
+
+
 
 export const productCategoryRelation = relations(products, ({ many }) => ({
   productsToCategory: many(productsToCategory),
@@ -89,13 +90,14 @@ export const productCategoryRelation = relations(products, ({ many }) => ({
 export const productsToCategory = pgTable(
   "products_to_category",
   {
-    product_id: text("product_id").references(() => products.id, {
+    product_id: text("product_id").notNull().references(() => products.id, {
       onDelete: "cascade",
     }),
-    category_id: text("category_id").references(() => categories.id, {
+    category_id: text("category_id").notNull().references(() => categories.id, {
       onDelete: "cascade",
     }),
   },
+
   (t) => ({
     pk: primaryKey({ columns: [t.product_id, t.category_id] }),
   })
@@ -182,6 +184,7 @@ export const cart = pgTable("cart", {
   (table) => ({
     userOrGuestCheck: check("cart_user_or_guest_check", sql`"userid" IS NOT NULL OR "guest_token" IS NOT NULL`)
   })
+
 );
 
 export const cartitem = pgTable("cartitem", {
@@ -199,8 +202,8 @@ export const cartitem = pgTable("cartitem", {
   selected_options: jsonb("selected_options").default('{}'),
 });
 
-export const cartItemsRelation = relations(cart, ({ many }) => ({
-  items: many(cartitem),
+export const cartRelation = relations(cart, ({ many }) => ({
+  items: many(cartitem)
 }));
 
 export const cartItemRelations = relations(cartitem, ({ one }) => ({
@@ -264,5 +267,13 @@ export const schema = {
   orders,
   orderitem,
   cart,
-  cartitem
+  cartitem,
+  cartRelation,
+  cartItemRelations,
+  itemOrderRelation,
+  orderItemRelations,
+  usersRelations,
+  productsToCategoryRelations,
+  productCategoryRelation,
+  categoryProductRelation,
 }

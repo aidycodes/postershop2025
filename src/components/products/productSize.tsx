@@ -1,0 +1,71 @@
+import { useState } from "react";
+import { sizesObject } from "./product-item";
+
+type Size = [string, string | number][]
+type SelectedSize = [string, string | number]
+
+const SizeCircle = ({label, size, onClick, selected}: {
+    label: string, 
+    size: [string, string | number] | undefined, 
+    onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, size: [string, string | number]) => void,
+    selected: boolean
+}) => {
+
+    const [isVisible, setIsVisible] = useState(false);
+
+    return (
+        <>
+        {
+            selected ? (
+                <>
+                <div onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)} 
+                 onClick={(e) => size && onClick(e, size)} 
+                 className="w-8 h-8 rounded-full flex items-center justify-center bg-blue-300 relative">
+                    <span className="text-sm font-medium">{label}</span>
+                </div>
+                {isVisible && (
+          <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap">
+            {size?.[0]}
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+          </div>
+        )}
+                </>
+            ) : (
+                <>
+                <div onMouseEnter={() => setIsVisible(true)} 
+                onMouseLeave={() => setIsVisible(false)} 
+                onClick={(e) => size && onClick(e, size)} 
+                className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-sm font-medium">{label}</span>
+                </div>
+                {isVisible && (
+
+          <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap">
+          {size?.[0]?.split("(")[1]} 
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+          </div>
+        )}
+                </>
+            )               
+        }
+        </>
+    )
+}
+
+
+const SizeSelector = ({selectedSize, setSelectedSize, sizes}:
+     {selectedSize: string, 
+      setSelectedSize: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, size: [string, string | number]) => void, 
+      sizes: Size }) => {
+
+    return (
+        <div className="flex items-center gap-2">
+            <SizeCircle label='S' size={sizes?.[0]} onClick={setSelectedSize} selected={selectedSize === sizes?.[0]?.[0]} />
+            <SizeCircle label='M' size={sizes?.[1]} onClick={setSelectedSize} selected={selectedSize === sizes?.[1]?.[0]} />
+            <SizeCircle label='L' size={sizes?.[2]} onClick={setSelectedSize} selected={selectedSize === sizes?.[2]?.[0]} />
+            <SizeCircle label='XL' size={sizes?.[3]} onClick={setSelectedSize} selected={selectedSize === sizes?.[3]?.[0]} />
+        </div>
+    )
+}
+
+export default SizeSelector

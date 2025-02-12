@@ -10,11 +10,11 @@ import { Omega } from "lucide-react"
 const Slider = ({images}: {images: string[]}) => {
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay()])
 
-    useEffect(() => {
-      if (emblaApi) {
-        console.log(emblaApi.slideNodes()) // Access API
-      }
-    }, [emblaApi])
+    // useEffect(() => {
+    //   if (emblaApi) {
+    // // Access API
+    //   }
+    // }, [emblaApi])
 
     
       return (

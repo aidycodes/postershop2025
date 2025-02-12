@@ -55,11 +55,19 @@ export const usersRouter = j.router({
       const userCart = await ctx.db.query.cart.findFirst({
         where: eq(cart.user_id, userId),
         with: {
-            product: true
+          items: true  // This should now work with the proper relations
         }
       })
+      
+    //   if (!userCart) {
+    //     // Create a new cart if none exists
+    //     const newCart = await ctx.db.insert(cart).values({
+    //       id: crypto.randomUUID(),
+    //       user_id: userId,
+    //     }).returning();
+    //     return c.json(newCart[0])
+    //   }
+      
       return c.json(userCart)
-
-
     }),
 })

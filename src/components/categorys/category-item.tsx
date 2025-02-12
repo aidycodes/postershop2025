@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 const CategoryItem = ({name, image, }: {name: string, image: string, }) => (
     <div key={name} className="relative h-48 rounded-lg overflow-hidden group">
-        <Link href={`/category/${name}`}>
+        <Link href={`/categories/${name}`}>
             <img 
             src={image} 
             alt={name}

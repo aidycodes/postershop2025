@@ -18,7 +18,7 @@ export const productsRouter = j.router({
       const { db } = ctx
 
       const product = await db.select().from(products).where(eq(products.productname, name))
-      return c.json({message: "Product fetched successfully"})
+      return c.json(product)
     }),
     productById: publicProcedure
     .input(z.object({ id: z.string().min(1) }))
@@ -37,7 +37,12 @@ export const productsRouter = j.router({
     .query(async ({ c, ctx, input }) => {
       const { category } = input
       const { db } = ctx
-      
+      const categoryId = await db.select().from(categories).where(eq(categories.name, category))
+   if(!categoryId[0]) {
+    return c.json({
+      message: "Category not found"
+    })
+   }
       const data = await db
         .select({
           id: products.id,
@@ -54,10 +59,8 @@ export const productsRouter = j.router({
           productsToCategory,
           eq(products.id, productsToCategory.product_id)
         )
-        .where(eq(productsToCategory.category_id, category));
-
+        .where(eq(productsToCategory.category_id, categoryId[0].id));
       return c.json({
-        message: "Products fetched successfully", 
         data
       })
     }),
@@ -98,4 +101,12 @@ export const productsRouter = j.router({
         data: categorys
     })
     }),
+    getFeaturedProducts: publicProcedure.query(async ({ c, ctx }) => {
+      const { db } = ctx
+      const featuredProducts = await db.select().from(products).where(eq(products.isFeatured, true))
+      console.log(featuredProducts, 'ddd')
+      return c.json({
+        data: featuredProducts
+    })
+}),
 })

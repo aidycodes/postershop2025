@@ -2,6 +2,7 @@ import { j } from "./jstack"
 import { postRouter } from "./routers/post-router"
 import { productsRouter } from "./routers/products-router"
 import { usersRouter } from "./routers/user-router"
+import { GuestCartRouter } from "./routers/guest-cart-router"
 
 /**
  * This is your base API.
@@ -20,7 +21,7 @@ const api = j
  * All routers in /server/routers should be added here manually.
  */
 const appRouter = j.mergeRouters(api, {
-  post: postRouter,
+  guestCart: GuestCartRouter,
   products: productsRouter,
   users: usersRouter,
 })

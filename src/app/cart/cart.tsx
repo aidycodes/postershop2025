@@ -1,0 +1,91 @@
+'use client'
+import { client } from "@/lib/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import React from "react";
+import CartItem from "./cart-item";
+import { useQuery } from "@tanstack/react-query";
+import EmptyCart from './EmptyCart';
+import LoadingCart from './LoadingCart';
+
+const Cart = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['cart'],
+    queryFn: async() => {
+      const res = await client.guestCart.getCart.$get()
+      return res.json()
+    }
+  })
+
+  if (isLoading) {
+    return <LoadingCart />;
+  }
+
+  const items = data?.items || [];
+  const subtotal = items?.reduce((acc, item) => acc + (+item.price * item.qty), 0) || 0;
+  const shipping = subtotal > 50 ? 0 : 5.99 
+
+
+  const total = subtotal + shipping 
+  
+  return (
+    <div className="max-w-5xl mx-auto px-4 py-12 ">
+      <h1 className="text-3xl font-bold text-gray-900 mb-12">Shopping Cart</h1>
+      
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+        <div className="lg:col-span-8">
+          {items.length === 0 ? (
+            <EmptyCart />
+          ) : (
+            <div className="space-y-1">
+              {items.map(item => (
+                <CartItem key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+        </div>
+        
+        <div className="lg:col-span-4">
+          <div className="bg-gray-50 rounded-lg p-6 lg:min-h-[340px]">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
+            
+            <div className="space-y-4">
+              <div className="flex justify-between text-gray-600">
+                <span>Subtotal</span>
+                <span>£{subtotal?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Shipping</span>
+                <span>{shipping === 0  ? <div className="text-green-600 font-semibold">Free</div> : `£${shipping.toFixed(2)}`}</span>
+              </div>
+           
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <div className="flex justify-between font-semibold text-gray-900">
+                  <span>Total</span>
+                  <span>£{total.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+            
+            <button 
+              disabled={items.length === 0}
+              className={`w-full mt-8 py-2 text-lg text-white rounded-md transition-colors ${
+                items.length === 0 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-blue-500 hover:bg-blue-600'
+              }`}
+            >
+              Checkout
+            </button>
+            
+            <p className="text-gray-500 text-sm text-center mt-4">
+              {shipping !== 0 ? 'Free shipping on orders over £50' : ''}
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default Cart;
