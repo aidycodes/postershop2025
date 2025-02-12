@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { sizesObject } from "./product-item";
 
 type Size = [string, string | number][]
-type SelectedSize = [string, string | number]
 
 const SizeCircle = ({label, size, onClick, selected}: {
     label: string, 
