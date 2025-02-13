@@ -2,6 +2,7 @@
 import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import SearchArea  from '@/components/navigation/search-area'
 
 interface SearchPopupProps {
   isOpen: boolean
@@ -16,7 +17,8 @@ export function SearchPopup({ isOpen, onClose }: SearchPopupProps) {
     queryFn: async() => {
       const res = await fetch(`/api/products/search?q=${searchQuery}`)
       return res.json()
-    }
+    },
+    enabled: !!searchQuery
   })
 
   if (!isOpen) return null
@@ -42,7 +44,10 @@ export function SearchPopup({ isOpen, onClose }: SearchPopupProps) {
             <X className="h-4 w-4" />
           </button>
         </div>
+ 
+        
       </div>
+    
     </div>
   )
 } 

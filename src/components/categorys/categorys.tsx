@@ -38,7 +38,7 @@ const Categorys = ({categories}: {categories: Category[]}) => {
         <h3 className="text-2xl font-semibold mb-8">Browse Categories</h3>
         <div className="flex flex-wrap justify-center gap-4">
           {categories?.map(({ name, image }) => (
-            <div className="w-full sm:w-[calc(50%-8px)] md:w-[calc(25%-12px)]">
+            <div key={name} className="w-full sm:w-[calc(50%-8px)] md:w-[calc(25%-12px)]">
               <CategoryItem key={name} name={name || ''} image={image || ''}  />
             </div>
           ))}

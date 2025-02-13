@@ -1,5 +1,24 @@
 import Link from 'next/link';
-import { LINKS } from '../navigation/nav-links';
+
+
+export const LINKS = [{
+  label:"New Arrivals",
+  href:"/new-arrivals"
+},
+{
+  label:"Categories",
+  href:"/categories"
+},
+{
+  label:"Best Sellers",
+  href:"/best-sellers"
+},
+{
+  label:"About",
+  href:"/about"
+},
+]
+
 const Footer = ({blurb, storeName, infoPages}: {blurb: string, storeName: string, infoPages: string[]}) => {
     return (
         <footer className="bg-gray-900 text-white py-12">

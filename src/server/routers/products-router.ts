@@ -1,8 +1,7 @@
-import { products, categories, productsToCategory } from "@/server/db/schema"
-import { desc, eq, ilike, sql } from "drizzle-orm"
+import { products, categories, productsToCategory, orderitem } from "@/server/db/schema"
+import { desc, eq, ilike, sql, inArray } from "drizzle-orm"
 import { z } from "zod"
 import { j, publicProcedure, protectedProcedure } from "../jstack"
-
 
 export const productsRouter = j.router({
   allProducts: publicProcedure.query(async ({ c, ctx }) => {
@@ -83,15 +82,12 @@ export const productsRouter = j.router({
           stock: products.stock
         })
         .from(products)
-        .where(sql`
-          ${products.productname} ILIKE ${`%${query}%`} 
-        `)
-        .limit(limit);
+        .where(ilike(products.productname, `%${query}%`)) 
+        .limit(limit)
 
-      return c.json({
-        message: "Search completed successfully",
-        data: searchResults
-      });
+      return c.json(
+        searchResults
+      );
     }),
     getCategorys: publicProcedure.query(async ({ c, ctx }) => {
       const { db } = ctx
@@ -109,4 +105,45 @@ export const productsRouter = j.router({
         data: featuredProducts
     })
 }),
+getNewArrivals: publicProcedure.query(async ({ c, ctx }) => {
+  const { db } = ctx
+  const newArrivals = await db.select().from(products).orderBy(desc(products.created_at)).limit(8)
+  return c.json({
+    data: newArrivals
+  })
+}),
+getBestSellers: publicProcedure.query(async ({ c, ctx }) => {
+  const { db } = ctx
+
+  const sales = await db
+  .select({
+    productName: orderitem.productname,
+    totalCount: sql<number>`sum(${orderitem.quantity}) * count(*)`,
+  })
+  .from(orderitem)
+  .groupBy(orderitem.productname)
+  .orderBy(sql`sum(${orderitem.quantity}) * count(*) desc`)
+  .limit(8);
+  
+
+  if(sales.length === 0) {
+    console.log('no sales')
+    const data = await db.select().from(products).limit(8)
+    return c.json({
+      data
+    })
+  }
+
+  const bestSellers = await db.select()
+    .from(products)
+    .where(
+      inArray(
+        products.productname, 
+        sales.map(sale => sale.productName).filter((name): name is string => name !== null)
+      )
+    );
+  return c.json({
+    data: bestSellers
+  })
+})
 })

@@ -1,8 +1,9 @@
 import SignIn from "../components/auth/signIn"
-
+import SignInUp from "./sign-in-up"
 const Page = () => {
     return <div>
-        <SignIn />
+        {/* <SignIn /> */}
+        <SignInUp />
     </div>
 }
 

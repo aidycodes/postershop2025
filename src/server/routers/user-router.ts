@@ -3,6 +3,7 @@ import { eq, desc } from "drizzle-orm"
 import { z } from "zod"
 import { j, protectedProcedure } from "../jstack"
 import { cart } from "@/server/db/schema"
+import { HTTPException } from "hono/http-exception"
 
 export const usersRouter = j.router({
   // Get current user
@@ -21,7 +22,7 @@ export const usersRouter = j.router({
         currentUser
       })
     }),
-
+ 
   // Get user's orders
   myOrders: protectedProcedure
     .input(z.object({
@@ -58,16 +59,29 @@ export const usersRouter = j.router({
           items: true  // This should now work with the proper relations
         }
       })
-      
-    //   if (!userCart) {
-    //     // Create a new cart if none exists
-    //     const newCart = await ctx.db.insert(cart).values({
-    //       id: crypto.randomUUID(),
-    //       user_id: userId,
-    //     }).returning();
-    //     return c.json(newCart[0])
-    //   }
-      
+
       return c.json(userCart)
     }),
+    updateUser: protectedProcedure.input(z.object({name:z.string(), email:z.string(), phone:z.string(), city:z.string(), country:z.string(), postal_code:z.string(), address:z.string()}))
+    .mutation(async ({ c, ctx, input }) => {
+      const { userId } = ctx.session.session
+      const { name, email, phone, city, country, postal_code, address } = input
+      const updatedUser = await ctx.db.update(user).set({
+        name,
+        email,
+        phone,
+        city,
+        country,
+        postal_code,
+        address
+      }).where(eq(user.id, userId)).returning()
+ console.log(input)
+         if(!true){
+            throw new HTTPException(300, {
+                message: "Failed to update user"
+            })
+         }
+      return c.json(updatedUser)
+
+    })
 })

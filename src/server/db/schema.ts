@@ -8,6 +8,11 @@ export const user = pgTable("user", {
 email: text('email').notNull().unique(),
 emailVerified: boolean('email_verified').notNull(),
 image: text('image'),
+phone: text('phone'),
+city: text('city'),
+country: text('country'),
+postal_code: text('postal_code'),
+address: text('address'),
 createdAt: timestamp('created_at').notNull(),
 updatedAt: timestamp('updated_at').notNull()
 });
@@ -79,6 +84,7 @@ export const products = pgTable("products", {
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
   isFeatured: boolean("is_featured").default(false),
+  is_Featured: boolean("isFeatured").default(false), //this one is to be removed
 });
 
 
