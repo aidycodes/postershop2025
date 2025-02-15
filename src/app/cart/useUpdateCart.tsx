@@ -17,7 +17,7 @@ const useUpdateCart = (item: CartItemType) => {
                 id: id,
                 quantity: newQuantity,
                 price: item.price,
-                options: item.options
+                
 
             })
             return res.json()
