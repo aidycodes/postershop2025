@@ -1,19 +1,23 @@
 import ProductDisplay from "@/components/products/product-display"
-import { Poster } from "@/components/products/product-item"
+import { client } from "@/lib/client"
+
 
 const BestSellers = async () => {
-    try{
-    const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/getBestSellers`)
-    const products: {data:Poster[]} = await data.json()
-
-    }catch(error){
-        console.log(error, 'error')
+    const data = await client.products.getBestSellers.$get()
+    const products = await data.json()
+    
+    // Transform null values to undefined to match Poster type
+    const transformedData = {
+        data: products.data.map((p: any) => ({
+            ...p,
+            stock: p.stock ?? undefined,
+            image: p.image ?? undefined
+        }))
     }
-    const products = {data:[]}
 
     return (
         <div>
-            <ProductDisplay products={products?.data} title="Best Sellers" />
+            <ProductDisplay products={transformedData.data} title="Best Sellers" />
         </div>
     )
 }
