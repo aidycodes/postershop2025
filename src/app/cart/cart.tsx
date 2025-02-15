@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import EmptyCart from './EmptyCart';
 import LoadingCart from './LoadingCart';
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 type SelectedOptions = {
   frame?: boolean;
@@ -22,7 +23,7 @@ const Cart = () => {
     }
   })
 
-  const {mutate: createCheckoutSession} = useMutation({
+  const {mutate: createCheckoutSession, isPending, isError, error} = useMutation({
     mutationFn: async() => { 
       if (!data?.items) return;
       const cartItems = data.items.map(item => ({
@@ -92,17 +93,18 @@ const Cart = () => {
             </div>    
             <button 
             onClick={() => createCheckoutSession()}
-              disabled={items.length === 0}
-              className={`w-full mt-8 py-2 text-lg text-white rounded-md transition-colors ${
-                items.length === 0 
+              disabled={items.length === 0 || isPending}
+              className={`w-full mt-8 py-2 text-lg text-white rounded-md transition-colors  ${
+                items.length === 0 || isPending
                   ? 'bg-gray-400 cursor-not-allowed' 
                   : 'bg-blue-500 hover:bg-blue-600'
               }`}
             >
-              Checkout
+              {isPending ? <div className="flex items-center justify-center gap-2"><Loader2 className="animate-spin"/> Processing...</div> : 'Checkout'}
             </button>      
             <p className="text-gray-500 text-sm text-center mt-4">
               {shipping !== 0 ? 'Free shipping on orders over £50' : ''}
+              {isError && <div className="text-red-500 text-sm text-center mt-4">An error occurred, please try again.</div>}
             </p>
           </div>
         </div>

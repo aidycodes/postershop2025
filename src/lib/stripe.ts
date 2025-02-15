@@ -29,6 +29,10 @@ export const createCheckoutSession = async({userEmail, userId, cartItems, }: {us
         shipping_options: cartItemsTotal > 50 ? FreeShipping : StandardShipping ,
         line_items: cartItemsTotalFrames > 0 ? [...cartItemArray, {price: FrameId, quantity: cartItemsTotalFrames}] : cartItemArray,
         mode: "payment",
+        billing_address_collection: 'required',
+        
+        allow_promotion_codes: true,
+
         success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
         cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
         customer_email: userEmail ?? 'guest@guest.com',

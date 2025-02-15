@@ -5,6 +5,8 @@ import ProductStock from '@/components/products/product-stock';
 import ImageComponent from './ImageComponent';
 import Suggestions from '@/components/Suggestions/suggestions';
 import useAddItemToCart from '@/app/queryhooks/useAddItemToCart';
+import { extractASize } from '@/lib/utils';
+
 export interface ProductProps {
   id: string;
   productname: string;
@@ -19,14 +21,14 @@ export interface ProductProps {
   };
 }
 
-const ProductPage = ({ id, productname, price, image, description, stock, sku, options }: ProductProps) => {
+const ProductPage = ({ id, productname, image, description, stock, sku, options }: ProductProps) => {
 
 const sizes = Object.entries(options?.sizes || {})
  console.log(sizes[0], 'sizes33')
-  const [selectedSize, setSelectedSize] = useState(sizes[1] || []);
+  const [selectedSize, setSelectedSize] = useState(['Small (A3 - 11.7" × 16.5" / 297 × 420 mm)', 10]);
   const [withFrame, setWithFrame] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  
+  console.log(selectedSize, 'selectedSize')
   console.log(options, 'otpions')
  
   const framePrice = 29.99;
@@ -123,14 +125,14 @@ const addToCart = () => {
           <div className="bg-white p-6 rounded-xl shadow-lg space-y-4">
             <h3 className="text-xl font-semibold mb-4">Choose Size</h3>
             <div className="space-y-3">
-              {Object.entries(options?.sizes || {}).map(([key, value], i) => (
+              {Object.entries(options?.sizes || {}).sort((a, b) => extractASize(b[0]) - extractASize(a[0])).map(([key, value], i) => (
                 <div 
                   key={key}
                   onClick={() => setSelectedSize([key, value])}
                   className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
                     selectedSize[0] === key 
                       ? 'bg-blue-500 hover:bg-blue-600 text-white' 
-                      : 'bg-gray-50 hover:bg-gray-100'
+                      : 'bg-gray-50 hover:bg-gray-100 '
                   }`}
                 >
                   <div className="flex items-center justify-between">

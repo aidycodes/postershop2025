@@ -2,7 +2,7 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import { CartItemType } from '@/server/routers/guest-cart-router';
 import useUpdateCart from './useUpdateCart';
 import useDeleteCartItem from './useDeleteCartItem';
-
+import Link from 'next/link';
 type SelectedOptions = {
     size?: string;
     [key: string]: string | undefined;
@@ -20,9 +20,11 @@ interface CartItemProps {
    const {deleteCartItem, isPending: isDeleting} = useDeleteCartItem(item.id as string)
 
    const SelectedOptions = Object.entries(item.selected_options as SelectedOptions).map(([key, value]) => {
+    if(value){
     return (
         <p key={key} className="text-gray-500 mt-1">{key}: {value}</p>
     )
+}
    })
 
     return (
@@ -35,7 +37,9 @@ interface CartItemProps {
           />
         </div>
         <div className="flex-1 flex flex-col h-44">
-          <h3 className="font-medium text-lg text-gray-900">{item.productname}</h3>
+          <Link href={`/products/${item.productname}`}>
+          <h3 className="font-medium text-lg text-gray-900 hover:underline">{item.productname}</h3>
+          </Link>
           <p className="text-gray-500 mt-1">${item.price}</p>
           {SelectedOptions}
           <div className="mt-auto">
@@ -59,7 +63,7 @@ interface CartItemProps {
               </div>
               <button
                 onClick={() => deleteCartItem()}
-                className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                className="p-2 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
               >
                 <Trash2 className="h-6 w-6" />
               </button>
