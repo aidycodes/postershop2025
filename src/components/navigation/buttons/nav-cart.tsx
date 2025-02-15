@@ -25,7 +25,7 @@ const NavCart = ({ isSignedIn }: NavCartProps) => {
 
     return (
         <div className="relative">
-            <Link className="hover:text-gray-900 group cursor-pointer group" href={`${isSignedIn ? "/users/cart" : "/guest/cart"}`}>
+            <Link className="hover:text-gray-900 group cursor-pointer group" href={`${isSignedIn ? "/cart" : "/cart"}`}>
                 <ShoppingCart className="h-6 w-6 text-gray-400 group-hover:text-gray-900" />
                 {items?.length && items?.length > 0 && (
                     <span className="absolute top-1 right-0 inline-flex items-center justify-center px-[4px] py-[2px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
