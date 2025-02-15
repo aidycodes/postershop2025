@@ -53,6 +53,7 @@ export const productsRouter = j.router({
       const categoryId = await db.select().from(categories).where(eq(categories.name, category))
    if(!categoryId[0]) {
     return c.json({
+        data: [],
       message: "Category not found"
     })
    }
@@ -128,7 +129,6 @@ getNewArrivals: publicProcedure.query(async ({ c, ctx }) => {
 }),
 getBestSellers: publicProcedure.query(async ({ c, ctx }) => {
   const { db } = ctx
-
   const sales = await db
   .select({
     productName: orderitem.productname,
@@ -138,7 +138,6 @@ getBestSellers: publicProcedure.query(async ({ c, ctx }) => {
   .groupBy(orderitem.productname)
   .orderBy(sql`sum(${orderitem.quantity}) * count(*) desc`)
   .limit(8);
-  
 console.log(sales, 'sales')
   if(sales.length === 0) {
     console.log('no sales')
@@ -148,7 +147,6 @@ console.log(sales, 'sales')
       data
     })
   }
-
   const bestSellers = await db.select()
     .from(products)
     .where(

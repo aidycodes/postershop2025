@@ -4,6 +4,7 @@ import Footer from "@/components/footer/footer"
 import PromotionBanner from "@/components/navigation/promotion-banner"
 import Navbar from "@/components/navigation/navbar"
 import type { Category } from "@/components/categorys/categorys"
+import { client } from "@/lib/client"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const categories = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/getCategorys`)
+  const categories = await client.products.getCategorys.$get()
   const categoriesData: {data: Category[]} = await categories.json()
   return (
     <html lang="en">

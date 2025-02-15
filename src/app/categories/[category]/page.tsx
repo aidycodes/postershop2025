@@ -1,14 +1,15 @@
 import ProductDisplay from "@/components/products/product-display";
-
+import { client } from "@/lib/client";
+import { Poster } from "@/components/products/product-item";
 type tParams = Promise<{category: string}>
 
 const CategoryPage = async(params: {params: tParams}) => {
     const {category} = await params.params;
-    const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/productsByCategory?category=${category}`)
-    const products: any = await data.json()
+    const data = await client.products.productsByCategory.$get({category: category})
+    const products = await data.json()
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <ProductDisplay products={products.data} title={category} />
+            <ProductDisplay products={products.data as Poster[]} title={category} />
         </div>
     )
 }
