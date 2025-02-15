@@ -22,6 +22,7 @@ export const paymentRouter = j.router({
   create: publicProcedure
     .input(createCheckoutSessionSchema)
     .mutation(async ({ ctx, c, input }) => {
+      try{
       const { cartItems } = input
       const { db } = ctx
       const session = await auth.api.getSession({
@@ -49,7 +50,11 @@ export const paymentRouter = j.router({
     return c.json({url: checkoutsession.url})
 }
     }
-  })
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    return c.json({ error: "Failed to create checkout session" }, 500);
+  }
+})
     
  })
     
