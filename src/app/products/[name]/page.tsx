@@ -1,9 +1,9 @@
 import Product, { ProductProps } from "./product";
 
+type tParams = Promise<{name: string}>
 
-
-const Page = async ({ params }: { params: { name: string } }) => {
-    const { name } = await params;
+const Page = async (params: { params: tParams }) => {
+    const { name } = await params.params;
     console.log(name, 'name')
     const product = await fetch(`http://localhost:3000/api/products/productByName?name=${name}`);
     const productData: ProductProps[] = await product.json();
