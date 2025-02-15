@@ -16,8 +16,21 @@ const NavCart = ({ isSignedIn }: NavCartProps) => {
             if (res.status !== 200) {
                 throw new Error("Failed to fetch cart");
             }
+
+            
             return res.json();
         },
+        initialData: {
+            cart: {
+                id: '',
+                user_id: null,
+                guest_token: null,
+                created_at: null,
+                updated_at: null
+            },
+            items: []
+        }
+       
     });
 
     const cart = data?.cart;
