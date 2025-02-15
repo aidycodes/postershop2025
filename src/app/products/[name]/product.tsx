@@ -41,15 +41,22 @@ console.log({totalPrice})
   const {mutate, isPending} = useAddItemToCart()
 
 const addToCart = () => {
-  mutate({poster: {id: id, productname: productname, price: selectedSize[1].toString(),
-    image: image,
-    description: description,
-    options: options
-},
-   selectedSize: selectedSize[0], 
-   withFrame: withFrame, 
-   quantity: quantity,
-   totalPrice: totalPrice})
+  if (!selectedSize[1]) return;
+  
+  mutate({
+    poster: {
+      id: id, 
+      productname: productname, 
+      price: selectedSize[1].toString(),
+      image: image,
+      description: description,
+      options: options
+    },
+    selectedSize: selectedSize[0] as string, 
+    withFrame: withFrame, 
+    quantity: quantity,
+    totalPrice: totalPrice
+  });
 }
 
 
