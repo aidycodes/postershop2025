@@ -31,7 +31,7 @@ export const createCheckoutSession = async({userEmail, userId, cartItems, }: {us
         mode: "payment",
         success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
         cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
-        customer_email: userEmail ?? 'guest',
+        customer_email: userEmail ?? 'guest@guest.com',
         metadata: {
             userId: userId && 'guest'
         }

@@ -31,7 +31,7 @@ export const paymentRouter = j.router({
  if (!session) {
     const checkoutsession = await createCheckoutSession({
         cartItems,
-        userEmail: 'guest',
+        userEmail: 'guest@guest.com',
         userId: 'guest',
     })
     return c.json({url: checkoutsession.url})
