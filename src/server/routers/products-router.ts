@@ -139,10 +139,11 @@ getBestSellers: publicProcedure.query(async ({ c, ctx }) => {
   .orderBy(sql`sum(${orderitem.quantity}) * count(*) desc`)
   .limit(8);
   
-
+console.log(sales, 'sales')
   if(sales.length === 0) {
     console.log('no sales')
     const data = await db.select().from(products).limit(8)
+    console.log(data, 'data')
     return c.json({
       data
     })
