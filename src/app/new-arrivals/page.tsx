@@ -2,7 +2,7 @@ import ProductDisplay from "@/components/products/product-display"
 import { Poster } from "@/components/products/product-item"
 
 const NewArrivals = async () => {
-    const data = await fetch("http://localhost:3000/api/products/getNewArrivals")
+    const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/getNewArrivals`)
         const products: {data:Poster[]} = await data.json()
 
     return (

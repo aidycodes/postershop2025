@@ -6,7 +6,7 @@ import SearchArea from "@/components/navigation/search-area"
 import { useRef } from "react"
 
 const NavSearch = () => {
-    const [isOpen, setIsOpen] = useState(true)
+    const [isOpen, setIsOpen] = useState(false)
 
     const handleClose = () => {
         setIsOpen(false)
