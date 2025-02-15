@@ -1,5 +1,4 @@
 import { j } from "./jstack"
-import { postRouter } from "./routers/post-router"
 import { productsRouter } from "./routers/products-router"
 import { usersRouter } from "./routers/user-router"
 import { GuestCartRouter } from "./routers/guest-cart-router"
