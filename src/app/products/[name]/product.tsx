@@ -13,22 +13,21 @@ export interface ProductProps {
   description: string;
   stock: number;
   sku?: string;
-  options?: {
-    sizes?: {
-      [key: string]: string | number
-    };
-    [key: string]: any;
-  }
+  options: {
+    sizes: { [key: string]: string | number };
+    stripeIds: { [key: string]: string };
+  };
 }
 
 const ProductPage = ({ id, productname, price, image, description, stock, sku, options }: ProductProps) => {
 
 const sizes = Object.entries(options?.sizes || {})
-
+ console.log(sizes[0], 'sizes33')
   const [selectedSize, setSelectedSize] = useState(sizes[1] || []);
   const [withFrame, setWithFrame] = useState(false);
   const [quantity, setQuantity] = useState(1);
   
+  console.log(options, 'otpions')
  
   const framePrice = 29.99;
   const totalPrice = (Number(selectedSize[1]) + (withFrame ? framePrice : 0)) * quantity;
@@ -36,22 +35,22 @@ console.log({totalPrice})
   const handleQuantityChange = (delta: number) => {
     setQuantity(Math.max(1, quantity + delta));
   };
- 
 
-  const {mutate, isPending} = useAddItemToCart({poster: {id: id, productname: productname, price: selectedSize[1].toString(),
+  const {mutate, isPending} = useAddItemToCart()
+
+const addToCart = () => {
+  mutate({poster: {id: id, productname: productname, price: selectedSize[1].toString(),
     image: image,
-    description: description},
+    description: description,
+    options: options
+},
    selectedSize: selectedSize[0], 
    withFrame: withFrame, 
    quantity: quantity,
-   totalPrice: totalPrice
-})
-
-const addToCart = () => {
-  mutate()
+   totalPrice: totalPrice})
 }
 
-console.log(selectedSize)
+
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="grid md:grid-cols-2 gap-8">

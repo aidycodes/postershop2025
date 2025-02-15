@@ -25,14 +25,25 @@ export const Cats = [
     }
 ]
 
-
+const StripIds =[ { //Sci fi space station
+    Small: 'evt_1Qs62hFzkPWWZeDIwihC2JpV',
+    Medium: 'price_1Qs62hFzkPWWZeDIOOylWIOA',
+    Large: 'price_1Qs62hFzkPWWZeDISsQkBfDo',
+    XLarge: 'price_1Qs62hFzkPWWZeDIWEL6QsVt',
+},
+{
+    Small: 'evt_1Qs62hFzkPWWZeDIwihC2JpV',
+    Medium: 'price_1Qs62hFzkPWWZeDIOOylWIOA',
+    Large: 'price_1Qs62hFzkPWWZeDISsQkBfDo',
+    XLarge: 'price_1Qs62gFzkPWWZeDIUZhJt7hP',
+}]
 
 export const Options = {
     sizes: {
-        'Small (A3 - 11.7" × 16.5" / 297 × 420 mm)': 10,
-        'Medium (A2 - 16.5" × 23.4" / 420 × 594 mm)': 20,
-        'Large (A1 - 23.4" × 33" / 594 × 827 mm)': 30,
-        'XLarge (A0 - 33" × 46.8" / 827 × 1169 mm)': 40,
+        'Small (A3 - 11.7" × 16.5" / 297 × 420 mm)': 9.99,
+        'Medium (A2 - 16.5" × 23.4" / 420 × 594 mm)': 19.99,
+        'Large (A1 - 23.4" × 33" / 594 × 827 mm)': 29.99,
+        'XLarge (A0 - 33" × 46.8" / 827 × 1169 mm)': 39.99,
     },
 }
 

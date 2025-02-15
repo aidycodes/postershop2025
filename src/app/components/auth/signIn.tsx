@@ -61,23 +61,7 @@ const CuteSignIn = () => {
             />
           </div>
           
-          <button 
-            type="submit"
-            className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition-colors duration-300"
-          >
-            Sign In
-          </button>
-          <button 
-            onClick={() => signInSocial()}
-            className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors duration-300"
-          >
-            <img 
-              src="/google.svg" 
-              alt="Google logo" 
-              className="mr-2 h-5 w-5"
-            />
-            <span className="text-gray-700 font-medium">Sign in with Google</span>
-          </button>
+
         </form>
       </div>
     </div>

@@ -16,6 +16,9 @@ export interface Poster {
     options?: {
         sizes: {
             [key: string]: string | number
+        },
+        stripeIds: {
+            [key: string]: string
         }
     }
 
@@ -26,16 +29,16 @@ const ProductItem = ({poster}: {poster: Poster}) => {
     const sizes = Object.entries(poster.options?.sizes || {});
 
     const [selectedSize, setSelectedSize] = useState(sizes[1] || '');
-    const { mutate, isPending} = useAddItemToCart({poster:{...poster, price:selectedSize[1]?.toString()},
-                                                    selectedSize:selectedSize[0],
-                                                    withFrame: false,
-                                                    quantity: 1,
-                                                    totalPrice:Number(selectedSize[1]) })
+    const { mutate, isPending} = useAddItemToCart()
     
     
     const addToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        mutate()
+        mutate({poster:{...poster, price:selectedSize[1]?.toString()},
+        selectedSize:selectedSize[0],
+        withFrame: false,
+        quantity: 1,
+        totalPrice:Number(selectedSize[1]) })
     }
     
     const handleSizeChange = 

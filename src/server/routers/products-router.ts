@@ -16,8 +16,22 @@ export const productsRouter = j.router({
       const { name } = input
       const { db } = ctx
 
-      const product = await db.select().from(products).where(eq(products.productname, name))
-      return c.json(product)
+      // Log exact search term
+      console.log('Searching for:', name);
+
+      // Get the product with exact match first
+      const exactProduct = await db.select().from(products).where(eq(products.productname, name));
+      console.log('Exact match result:', exactProduct);
+
+      // If no exact match, try case-insensitive search
+      if (!exactProduct.length) {
+        const likeProduct = await db.select().from(products)
+          .where(ilike(products.productname, name));
+        console.log('Case-insensitive match result:', likeProduct);
+        return c.json(likeProduct);
+      }
+
+      return c.json(exactProduct);
     }),
     productById: publicProcedure
     .input(z.object({ id: z.string().min(1) }))

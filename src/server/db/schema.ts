@@ -198,6 +198,7 @@ export const cartitem = pgTable("cartitem", {
   cartid: text("cartid"),
   productname: text("productname"),
   productid: text("productid"),
+  stripeid: text("stripeid"),
   productimage: text("productimage"),
   productdescription: text("productdescription"),
   productextra: text("productextra"),

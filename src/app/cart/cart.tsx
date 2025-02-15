@@ -1,11 +1,17 @@
 'use client'
 import { client } from "@/lib/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import React from "react";
 import CartItem from "./cart-item";
 import { useQuery } from "@tanstack/react-query";
 import EmptyCart from './EmptyCart';
 import LoadingCart from './LoadingCart';
+import { useRouter } from "next/navigation";
+
+type SelectedOptions = {
+  frame?: boolean;
+  [key: string]: any;
+}
 
 const Cart = () => {
   const { data, isLoading } = useQuery({
@@ -16,15 +22,36 @@ const Cart = () => {
     }
   })
 
+  const {mutate: createCheckoutSession} = useMutation({
+    mutationFn: async() => { 
+      if (!data?.items) return;
+      const cartItems = data.items.map(item => ({
+        quantity: item.qty,
+        name: item.productname,
+        stripeid: item.stripeid,
+        price: item.price,
+        frame: (item.selected_options as SelectedOptions)?.frame ? true : false
+      }));
+      const res = await client.payment.create.$post({ cartItems });
+      return res.json();
+    },
+    onSuccess: (data) => {
+      router.push(data?.url as string)
+    },
+    onError: (error) => {
+      console.log(error)
+    }
+  })
+  const router = useRouter()
   if (isLoading) {
     return <LoadingCart />;
   }
 
-  const items = data?.items || [];
+  const items = [...(data?.items || [])].sort((a, b) => 
+    new Date(b.created_at as Date).getTime() - new Date(a.created_at as Date).getTime()
+  );
   const subtotal = items?.reduce((acc, item) => acc + (+item.price * item.qty), 0) || 0;
   const shipping = subtotal > 50 ? 0 : 5.99 
-
-
   const total = subtotal + shipping 
   
   return (
@@ -43,11 +70,9 @@ const Cart = () => {
             </div>
           )}
         </div>
-        
         <div className="lg:col-span-4">
           <div className="bg-gray-50 rounded-lg p-6 lg:min-h-[340px]">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>
-            
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h2>         
             <div className="space-y-4">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
@@ -64,9 +89,9 @@ const Cart = () => {
                   <span>£{total.toFixed(2)}</span>
                 </div>
               </div>
-            </div>
-            
+            </div>    
             <button 
+            onClick={() => createCheckoutSession()}
               disabled={items.length === 0}
               className={`w-full mt-8 py-2 text-lg text-white rounded-md transition-colors ${
                 items.length === 0 
@@ -75,14 +100,12 @@ const Cart = () => {
               }`}
             >
               Checkout
-            </button>
-            
+            </button>      
             <p className="text-gray-500 text-sm text-center mt-4">
               {shipping !== 0 ? 'Free shipping on orders over £50' : ''}
             </p>
           </div>
         </div>
-
       </div>
     </div>
   );

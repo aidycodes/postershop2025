@@ -21,6 +21,7 @@ const cartItemInput = z.object({
   id: z.string().optional(),
   cartid: z.string().optional(),
   product_id: z.string(),
+  stripeid: z.string(),
   quantity: z.number().min(1),
   price: z.number(),
   user_id: z.string().optional(),
@@ -37,6 +38,7 @@ export type CartItemType = {
     product_id: string;
     qty: number;
     id: string
+    stripeid: string;
     productimage?: string | undefined;
     user_id?: string | undefined;
     cartid?: string | undefined;
@@ -105,11 +107,11 @@ return c.superjson(null)
   addToCart: publicProcedure
     .input(cartItemInput)
     .mutation(async ({ ctx, c, input }) => {
-      console.log('eoeoooeeoeoeoeoeoeoeo')
+
       const { db } = ctx
       const secret = process.env.COOKIE_SECRET as string
       let guestToken = await getSignedCookie(c, secret)
- console.log(input.options)
+ console.log(input, 'input')
       if(!guestToken.guestCartID){
         const guestCartID = await setSignedCookie(c, "guestCartID", createId(), secret, {
           path: "/",
@@ -131,6 +133,7 @@ return c.superjson(null)
           productid: input.product_id,
           productimage: input.image,
           price: input.price.toString(),
+          stripeid: input.stripeid,
           quantity: input.quantity,
           total: input.total.toString(),
           selected_options: input.options
@@ -157,6 +160,7 @@ return c.superjson(null)
         productid: input.product_id,
         productimage: input.image,
         price: input.price.toString(),
+        stripeid: input.stripeid,
         quantity: input.quantity,
         total: input.total.toString(),
         selected_options: input.options

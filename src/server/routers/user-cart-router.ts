@@ -13,6 +13,7 @@ const cartItemInput = z.object({
   product_id: z.string(),
   quantity: z.number().min(1),
   price: z.number(),
+  stripeid: z.string(),
   user_id: z.string(),
   productname: z.string(),
   image: z.string(),
@@ -40,7 +41,7 @@ export const postRouter = j.router({
   addToCart: protectedProcedure
     .input(cartItemInput)
     .mutation(async ({ ctx, c, input }) => {
-      
+      console.log(input, 'input', 'dkdkdkdkd')
       const { db } = ctx
       let userCartId = input.cartid
       
@@ -66,14 +67,18 @@ export const postRouter = j.router({
     }
 
   if(userCartId){
+
+    console.log(input, 'input', 'dkdkdkdkd')
+
     const userCartItem = await db.insert(cartitem).values({
       id: createId(),
       cartid: userCartId,
       productname: input.productname,
       productid: input.product_id,
-      productimage: input.image,
+      productimage: input.image,      
       productdescription: input.description,
       price: input.price.toString(),
+      stripeid: input.stripeid,
       quantity: input.quantity,
       total: (input.price * input.quantity).toString()
     }).returning()

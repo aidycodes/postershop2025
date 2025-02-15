@@ -1,0 +1,214 @@
+[
+  {
+    "productName": "Diablo II - Resurrected",
+    "productId": "prod_RldImUC5FqzKac",
+    "options": {
+      "stripeIds": {
+        "Large": "price_1Qs62IFzkPWWZeDITpb2Klsn",
+        "Medium": "price_1Qs62IFzkPWWZeDIE9ZDjFrP",
+        "Small": "price_1Qs62IFzkPWWZeDIh1KZZwpR"
+      },
+      "Stock": {
+        "Large": 21,
+        "Small": 63,
+        "Medium": 48,
+        "XLarge": 78
+      },
+      "sizes": {
+        "Large (A1 - 23.4\" × 33\" / 594 × 827 mm)": 30,
+        "Small (A3 - 11.7\" × 16.5\" / 297 × 420 mm)": 10,
+        "XLarge (A0 - 33\" × 46.8\" / 827 × 1169 mm)": 40,
+        "Medium (A2 - 16.5\" × 23.4\" / 420 × 594 mm)": 20
+      }
+    }
+  },
+  {
+    "productName": "Art Print King Mario Bros",
+    "productId": "prod_RldImXnZfinvyY",
+    "options": {
+      "stripeIds": {
+        "XLarge": "price_1Qs62HFzkPWWZeDIMqmHSeuQ",
+        "Large": "price_1Qs62HFzkPWWZeDIILUCEIKw",
+        "Medium": "price_1Qs62HFzkPWWZeDI0RQuq6y9",
+        "Small": "price_1Qs62HFzkPWWZeDIrLRtAaow"
+      },
+      "Stock": {
+        "Large": 79,
+        "Small": 65,
+        "Medium": 32,
+        "XLarge": 36
+      },
+      "sizes": {
+        "Large (A1 - 23.4\" × 33\" / 594 × 827 mm)": 30,
+        "Small (A3 - 11.7\" × 16.5\" / 297 × 420 mm)": 10,
+        "XLarge (A0 - 33\" × 46.8\" / 827 × 1169 mm)": 40,
+        "Medium (A2 - 16.5\" × 23.4\" / 420 × 594 mm)": 20
+      }
+    }
+  },
+  {
+    "productName": "Super Mario All Stars",
+    "productId": "prod_RldIhW3NGF9LDx",
+    "options": {
+      "stripeIds": {
+        "XLarge": "price_1Qs62GFzkPWWZeDI1MZT27kz",
+        "Large": "price_1Qs62GFzkPWWZeDIx9YYv0vv",
+        "Medium": "price_1Qs62GFzkPWWZeDIZeV3jFH9",
+        "Small": "price_1Qs62GFzkPWWZeDIEIUmZgGS"
+      },
+      "Stock": {
+        "Large": 12,
+        "Small": 7,
+        "Medium": 26,
+        "XLarge": 88
+      },
+      "sizes": {
+        "Large (A1 - 23.4\" × 33\" / 594 × 827 mm)": 30,
+        "Small (A3 - 11.7\" × 16.5\" / 297 × 420 mm)": 10,
+        "XLarge (A0 - 33\" × 46.8\" / 827 × 1169 mm)": 40,
+        "Medium (A2 - 16.5\" × 23.4\" / 420 × 594 mm)": 20
+      }
+    }
+  },
+  {
+    "productName": "Art Print League Of Legends",
+    "productId": "prod_RldIxY1XEefwz0",
+    "options": {
+      "stripeIds": {
+        "XLarge": "price_1Qs62FFzkPWWZeDICInP6Db4",
+        "Large": "price_1Qs62FFzkPWWZeDIGFrSgzPP",
+        "Medium": "price_1Qs62FFzkPWWZeDI9fwoUb08",
+        "Small": "price_1Qs62FFzkPWWZeDITTlgQABt"
+      },
+      "Stock": {
+        "Large": 23,
+        "Small": 67,
+        "Medium": 15,
+        "XLarge": 85
+      },
+      "sizes": {
+        "Large (A1 - 23.4\" × 33\" / 594 × 827 mm)": 30,
+        "Small (A3 - 11.7\" × 16.5\" / 297 × 420 mm)": 10,
+        "XLarge (A0 - 33\" × 46.8\" / 827 × 1169 mm)": 40,
+        "Medium (A2 - 16.5\" × 23.4\" / 420 × 594 mm)": 20
+      }
+    }
+  },
+  {
+    "productName": "The Legend Of Zelda: Breath Of The Wild - Sunset",
+    "productId": "prod_RldINV3Tb60NzD",
+    "options": {
+      "stripeIds": {
+        "XLarge": "price_1Qs62EFzkPWWZeDIKVQSognU",
+        "Large": "price_1Qs62EFzkPWWZeDIaljssoIY",
+        "Medium": "price_1Qs62EFzkPWWZeDIdNoONiT1",
+        "Small": "price_1Qs62DFzkPWWZeDIlWl3gzor"
+      },
+      "Stock": {
+        "Large": 13,
+        "Small": 41,
+        "Medium": 24,
+        "XLarge": 32
+      },
+      "sizes": {
+        "Large (A1 - 23.4\" × 33\" / 594 × 827 mm)": 30,
+        "Small (A3 - 11.7\" × 16.5\" / 297 × 420 mm)": 10,
+        "XLarge (A0 - 33\" × 46.8\" / 827 × 1169 mm)": 40,
+        "Medium (A2 - 16.5\" × 23.4\" / 420 × 594 mm)": 20
+      }
+    }
+  },
+  {
+    "productName": "Mortal Kombat - Thunder God",
+    "productId": "prod_RldI5j6ne8f4om",
+    "options": {
+      "stripeIds": {
+        "XLarge": "price_1Qs62DFzkPWWZeDI9cmLD9pX",
+        "Large": "price_1Qs62DFzkPWWZeDIO0NgRHnv",
+        "Medium": "price_1Qs62DFzkPWWZeDI67nzSJx3",
+        "Small": "price_1Qs62CFzkPWWZeDIiNO2DxaO"
+      },
+      "Stock": {
+        "Large": 13,
+        "Small": 77,
+        "Medium": 49,
+        "XLarge": 5
+      },
+      "sizes": {
+        "Large (A1 - 23.4\" × 33\" / 594 × 827 mm)": 30,
+        "Small (A3 - 11.7\" × 16.5\" / 297 × 420 mm)": 10,
+        "XLarge (A0 - 33\" × 46.8\" / 827 × 1169 mm)": 40,
+        "Medium (A2 - 16.5\" × 23.4\" / 420 × 594 mm)": 20
+      }
+    }
+  },
+  {
+    "productName": "Elf War",
+    "productId": "prod_RldI3fyVWqPOg2",
+    "options": {
+      "stripeIds": {
+        "XLarge": "price_1Qs62CFzkPWWZeDI7pRGtMqd",
+        "Large": "price_1Qs62CFzkPWWZeDILVrju1Kk",
+        "Medium": "price_1Qs62CFzkPWWZeDIfdLI6FBp",
+        "Small": "price_1Qs62BFzkPWWZeDIwFukrvjD"
+      },
+      "Stock": {
+        "Large": 10,
+        "Small": 68,
+        "Medium": 26,
+        "XLarge": 13
+      },
+      "sizes": {
+        "Large (A1 - 23.4\" × 33\" / 594 × 827 mm)": 30,
+        "Small (A3 - 11.7\" × 16.5\" / 297 × 420 mm)": 10,
+        "XLarge (A0 - 33\" × 46.8\" / 827 × 1169 mm)": 40,
+        "Medium (A2 - 16.5\" × 23.4\" / 420 × 594 mm)": 20
+      }
+    }
+  },
+  {
+    "productName": "The Witcher: Season 2 - Group",
+    "productId": "prod_RldIdP0ew6mAc8",
+    "options": {
+      "stripeIds": {
+        "XLarge": "price_1Qs62BFzkPWWZeDI2ZFau3Ax",
+        "Large": "price_1Qs62BFzkPWWZeDIENFXCiI7",
+        "Medium": "price_1Qs62BFzkPWWZeDIpDsghSqj",
+        "Small": "price_1Qs62AFzkPWWZeDIjdHcnKPo"
+      },
+      "Stock": {
+        "Large": 32,
+        "Small": 70,
+        "Medium": 85,
+        "XLarge": 29
+      },
+      "sizes": {
+        "Large (A1 - 23.4\" × 33\" / 594 × 827 mm)": 30,
+        "Small (A3 - 11.7\" × 16.5\" / 297 × 420 mm)": 10,
+        "XLarge (A0 - 33\" × 46.8\" / 827 × 1169 mm)": 40,
+        "Medium (A2 - 16.5\" × 23.4\" / 420 × 594 mm)": 20
+      }
+    }
+  },
+  {
+    "productName": "",
+    "productId": "prod_Rcyhbc1Aq2HxPX",
+    "options": {
+      "stripeIds": {
+        "Pro plan": "price_1QjikFFzkPWWZeDIROH7SAy2"
+      },
+      "Stock": {
+        "Large": 56,
+        "Small": 60,
+        "Medium": 71,
+        "XLarge": 32
+      },
+      "sizes": {
+        "Large (A1 - 23.4\" × 33\" / 594 × 827 mm)": 30,
+        "Small (A3 - 11.7\" × 16.5\" / 297 × 420 mm)": 10,
+        "XLarge (A0 - 33\" × 46.8\" / 827 × 1169 mm)": 40,
+        "Medium (A2 - 16.5\" × 23.4\" / 420 × 594 mm)": 20
+      }
+    }
+  }
+]
