@@ -18,6 +18,11 @@ export interface ProductProps {
   options: {
     sizes: { [key: string]: string | number };
     stripeIds: { [key: string]: string };
+    Stock: { Small: number 
+        Medium: number
+        Large: number
+        XLarge: number
+    };
   };
 }
 
@@ -25,11 +30,13 @@ const ProductPage = ({ id, productname, image, description, stock, sku, options 
 
 const sizes = Object.entries(options?.sizes || {})
  console.log(sizes[0], 'sizes33')
-  const [selectedSize, setSelectedSize] = useState(['Small (A3 - 11.7" × 16.5" / 297 × 420 mm)', 10]);
+  const [selectedSize, setSelectedSize] = useState<[string, number]>(['Small (A3 - 11.7" × 16.5" / 297 × 420 mm)', 10]);
   const [withFrame, setWithFrame] = useState(false);
   const [quantity, setQuantity] = useState(1);
   console.log(selectedSize, 'selectedSize')
   console.log(options, 'otpions')
+
+  console.log(options.Stock.Small, 'stock')
  
   const framePrice = 29.99;
   const totalPrice = (Number(selectedSize[1]) + (withFrame ? framePrice : 0)) * quantity;
@@ -59,10 +66,23 @@ const addToCart = () => {
   });
 }
 
+const selectedSizeStock = options?.Stock?.[
+    (selectedSize[0]?.split(' ')?.[0] ?? 'Small')
+      .charAt(0).toUpperCase() + 
+    (selectedSize[0]?.split(' ')?.[0] ?? 'Small')
+      .slice(1) as keyof typeof options.Stock
+  ]
 
+  const handleOptionsOutOfStock = (sizeString: string) => {
+   const sizeKey = options?.Stock?.[sizeString as keyof typeof options.Stock];
+    return sizeKey === 0;
+  }
+
+ console.log(options, 'opt')
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="grid md:grid-cols-2 gap-8">
+
         {/* Left Column - Image and Mobile Controls */}
         <div className="space-y-6">
           {/* Product Image with Zoom */}
@@ -116,7 +136,9 @@ const addToCart = () => {
         <div className="space-y-8">
           <div>
             <div className='flex items-center gap-3 mb-2'>
-            <ProductStock stock={stock ?? 100} />
+            <ProductStock 
+              stock={ selectedSizeStock ?? 100} 
+            />
             <span className="text-sm mb-2 text-gray-500">SKU: {sku ? sku : id ? id.toString().charAt(0).toUpperCase() + id.toString().slice(1,4) : ''} </span>
             </div>
             <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
@@ -131,24 +153,31 @@ const addToCart = () => {
           {/* Size Selection */}
           <div className="bg-white p-6 rounded-xl shadow-lg space-y-4">
             <h3 className="text-xl font-semibold mb-4">Choose Size</h3>
-            <div className="space-y-3">
-              {Object.entries(options?.sizes || {}).sort((a, b) => extractASize(b[0]) - extractASize(a[0])).map(([key, value], i) => (
-                <div 
-                  key={key}
-                  onClick={() => setSelectedSize([key, value])}
-                  className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
-                    selectedSize[0] === key 
-                      ? 'bg-blue-500 hover:bg-blue-600 text-white' 
-                      : 'bg-gray-50 hover:bg-gray-100 '
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{key}</span>
-                    <span className="font-bold">${value}.00</span>
+            {Object.entries(options?.sizes || {}).length > 0 ? (
+              <div className="space-y-3">
+                {Object.entries(options?.sizes || {}).sort((a, b) => extractASize(b[0]) - extractASize(a[0])).map(([key, value], i) => (
+                  <div 
+                    key={key}
+                    onClick={() => setSelectedSize([key, value as number])}
+                    className={`p-4 rounded-lg cursor-pointer transition-all duration-200 
+                     
+                      ${
+                      selectedSize[0] === key 
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                        : 'bg-gray-50 hover:bg-gray-100 '
+                    }`}
+                  >
+                    <div className={`flex items-center justify-between 
+                        ${handleOptionsOutOfStock(key.match(/^\S+/)?.[0] as string) ? 'text-decoration-line: line-through text-gray-300' : ''}`}>
+                      <span className="font-medium">{key}  </span>
+                      <span className={`font-bold`}>${value}.00</span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p>No sizes available</p>
+            )}
           </div>
 
           {/* Framing and Quantity - Hidden on Medium Screens */}
@@ -202,7 +231,9 @@ const addToCart = () => {
                 £{totalPrice.toFixed(2)}
               </span>
             </div>
-            <button onClick={addToCart} className="w-full bg-blue-500 cursor-pointer text-white py-4 rounded-lg text-lg font-medium hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2 group">
+            <button onClick={addToCart} disabled={selectedSizeStock === 0} 
+            className={`w-full bg-blue-500 cursor-pointer text-white py-4 rounded-lg text-lg
+             font-medium hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2 group ${selectedSizeStock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}>
               <ShoppingCart className="w-6 h-6 transform group-hover:scale-110 transition-transform" />
               <span>Add to Cart</span>
             </button>

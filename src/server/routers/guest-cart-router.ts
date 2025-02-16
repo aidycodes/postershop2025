@@ -111,7 +111,7 @@ return c.superjson(null)
       const { db } = ctx
       const secret = process.env.COOKIE_SECRET as string
       let guestToken = await getSignedCookie(c, secret)
- console.log(input, 'input')
+ console.log(input, 'input', input.options?.frame)
       if(!guestToken.guestCartID){
         const guestCartID = await setSignedCookie(c, "guestCartID", createId(), secret, {
           path: "/",
@@ -132,10 +132,10 @@ return c.superjson(null)
           productname: input.productname,
           productid: input.product_id,
           productimage: input.image,
-          price: input.price.toString(),
+          price: input.options?.frame ? (input.price + 29.99).toFixed(2).toString() : input.price.toString(),
           stripeid: input.stripeid,
           quantity: input.quantity,
-          total: input.total.toString(),
+          total: input.options?.frame ? (input.total + 29.99).toFixed(2).toString() : input.total.toString(),
           selected_options: input.options
         })
         const guestCart = await db
@@ -159,10 +159,10 @@ return c.superjson(null)
         productname: input.productname,
         productid: input.product_id,
         productimage: input.image,
-        price: input.price.toString(),
+        price: input.options?.frame ? (input.price + 29.99).toFixed(2).toString() : input.price.toString(),
         stripeid: input.stripeid,
         quantity: input.quantity,
-        total: input.total.toString(),
+        total: input.options?.frame ? (input.total + 29.99).toFixed(2).toString() : input.total.toString(),
         selected_options: input.options
       })
       .returning()
