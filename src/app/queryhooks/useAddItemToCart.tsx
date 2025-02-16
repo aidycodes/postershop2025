@@ -32,7 +32,7 @@ const useAddItemToCart = () => {
                     total: totalPrice,
                     options: {
                         size: selectedSize,
-                        frame: withFrame ? 'With Frame' : false
+                        frame: withFrame ? 'With Frame (+£29.99)' : false
                     }
 
                 }]}
@@ -48,7 +48,7 @@ const useAddItemToCart = () => {
                 stripeid: poster.options?.stripeIds[size] as string,
                 options: {
                     size: selectedSize,
-                    frame: withFrame ? 'With Frame' : false
+                    frame: withFrame ? 'With Frame (+£29.99)' : false
                 }
               
             })

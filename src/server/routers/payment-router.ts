@@ -7,7 +7,7 @@ import { user } from "@/server/db/schema"
 import { eq } from "drizzle-orm"
 //zod schema for input
 const createCheckoutSessionSchema = z.object({
-  
+  rawItems: z.array(z.object({}).passthrough()),
   cartItems: z.array(z.object({
     quantity: z.number(),
     name: z.string(),
@@ -23,7 +23,7 @@ export const paymentRouter = j.router({
     .input(createCheckoutSessionSchema)
     .mutation(async ({ ctx, c, input }) => {
       try{
-      const { cartItems } = input
+      const { cartItems, rawItems } = input
       const { db } = ctx
       const session = await auth.api.getSession({
         headers: c.req.raw.headers

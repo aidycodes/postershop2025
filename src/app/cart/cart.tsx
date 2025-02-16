@@ -33,7 +33,7 @@ const Cart = () => {
         price: item.price,
         frame: (item.selected_options as SelectedOptions)?.frame ? true : false
       }));
-      const res = await client.payment.create.$post({ cartItems });
+      const res = await client.payment.create.$post({ cartItems, rawItems: data.items });
       return res.json();
     },
     onSuccess: (data) => {

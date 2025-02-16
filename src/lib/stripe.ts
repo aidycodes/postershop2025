@@ -19,7 +19,7 @@ const StandardShipping = [
   ]
     
 
-export const createCheckoutSession = async({userEmail, userId, cartItems, }: {userEmail: string, userId: string, cartItems: any[]}) => {
+export const createCheckoutSession = async({userEmail, userId, cartItems }: {userEmail: string, userId: string, cartItems: any[]}) => {
 
     const cartItemsTotalFrames = cartItems.reduce((acc, item) => item.frame ? acc + (item.quantity * 1) : acc, 0)
     const cartItemsTotal = cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0)
@@ -33,11 +33,12 @@ export const createCheckoutSession = async({userEmail, userId, cartItems, }: {us
         
         allow_promotion_codes: true,
 
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
+        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
         customer_email: userEmail ?? 'guest@guest.com',
         metadata: {
-            userId: userId && 'guest'
+            userId: userId && 'guest',
+          
         }
     });
 

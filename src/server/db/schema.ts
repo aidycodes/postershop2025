@@ -149,8 +149,9 @@ export const orderitem = pgTable("orderitem", {
 
 export const orders = pgTable("order", {
   id: text("id").primaryKey(),
+  stripe_id: text("stripe_id"),
   total: decimal("total"),
-  user_id: text("userid").notNull().references(() => user.id),
+  user_id: text("userid").references(() => user.id),
   user_email: text("user_email"),
   deliveryAddress: text("user_address"),
   status: text("status").notNull(),
