@@ -10,7 +10,7 @@ import OrderTableSkeleton from './orderSkele';
 import NoOrders from './noOrders';
 interface Order {
     id: string;
-    created_at: string;
+    created_at: Date | null;
     total: number;
     postage: string;
     status: string;
@@ -165,14 +165,11 @@ const OrderTable = () => {
                         >
                             Previous
                         </button>
-                     <span className="text-sm text-gray-600 text-center md:mr-6">
-                        Page {page} of {Math.ceil(data?.orderCount?.[0]?.count ?? 0 / 10)}
-                     </span>
+                     <span className="text-sm text-gray-600 text-center md:mr-6">Page {page} of {Math.ceil(data?.orderCount[0].count / 10)}</span>
                     
                         <button 
-                            className={cn(`px-3 ml-auto py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer`, 
-                                page === Math.ceil(data?.orderCount?.[0]?.count ?? 0 / 10) ? 'opacity-50 cursor-default hover:text-gray-600' : '')} 
-                            disabled={page === Math.ceil(data?.orderCount?.[0]?.count ?? 0 / 10)} 
+                            className={cn(`px-3 ml-auto py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer`, page === Math.ceil(data?.orderCount[0].count / 10) ? 'opacity-50 cursor-default hover:text-gray-600' : '')} 
+                            disabled={page === Math.ceil(data?.orderCount[0].count / 10)} 
                             onClick={() => handlePageChange(page + 1)}
                         >
                             Next
