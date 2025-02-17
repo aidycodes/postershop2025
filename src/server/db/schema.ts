@@ -125,7 +125,9 @@ export const productsToCategoryRelations = relations(
 
 export const orderitem = pgTable("orderitem", {
   id: text("id").primaryKey(),
-  orderid: text("orderid"),
+  orderid: text("orderid").references(() => orders.id, {
+    onDelete: "cascade",
+  }),
   productname: text("productname"),
   productid: text("productid"),
   productimage: text("productimage"),

@@ -1,5 +1,5 @@
 import { orders, user, orderitem } from "@/server/db/schema"
-import { eq, desc } from "drizzle-orm"
+import { eq, desc, count } from "drizzle-orm"
 import { z } from "zod"
 import { j, protectedProcedure } from "../jstack"
 import { cart } from "@/server/db/schema"
@@ -26,25 +26,39 @@ export const usersRouter = j.router({
   // Get user's orders
   myOrders: protectedProcedure
     .input(z.object({
-      limit: z.number().min(1).max(50).default(10),
+      limit: z.number().min(1).max(50).default(1),
       offset: z.number().min(0).default(0)
     }).optional())
     .query(async ({ c, ctx, input }) => {
       const { userId } = ctx.session.session
       const { limit = 10, offset = 0 } = input ?? {}
 
-     const userOrders = await ctx.db.query.orders.findMany({
-        where: eq(orders.user_id, userId),
-        limit: limit,
-        offset: offset,
-        with: {
-            orderitem:true
-        },
-        orderBy: desc(orders.created_at)
-     })
+      //order count
+      const [userOrders, orderCount] = await Promise.all([
+        ctx.db.select().from(orders).where(eq(orders.user_id, userId)).orderBy(desc(orders.created_at)).limit(limit).offset(offset),
+        ctx.db.select({count:count()}).from(orders).where(eq(orders.user_id, userId)).limit(1).offset(0)
+      ])
+
+  
+      // Fetch order items for each order
+      const ordersWithItems = await Promise.all(
+        userOrders.map(async (order) => {
+          const orderItems = await ctx.db
+            .select()
+            .from(orderitem)
+            .where(eq(orderitem.orderid, order.id))
+            
+
+          return {
+            ...order,
+            orderItems, // Include the order items in the order object
+          };
+        })
+      );
 
       return c.superjson({  
-        userOrders
+        ordersWithItems,
+        orderCount
       });
 
     }),

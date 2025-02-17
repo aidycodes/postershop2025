@@ -7,6 +7,7 @@ import useSignUpEmail from './useSignUpEmail';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { Loader2 } from 'lucide-react';
 
 const schema = z.object({
     email: z.string().email(),
@@ -18,6 +19,7 @@ type SignInForm = z.infer<typeof schema>
 const SignInUp = () => {
 
     const [activeTab, setActiveTab] = useState('signin');  
+    const [loading, setLoading] = useState(false)
     
     const {signIn, isSignInPending, isSignInError, signInError} = useSignInEmail()
     const {signUp, isSignUpPending, isSignUpError, signUpError} = useSignUpEmail()
@@ -29,7 +31,7 @@ const SignInUp = () => {
             password: '',
             name: '',
         },
-        mode: 'onBlur'
+       
     })
     const {register: registerSignUp, handleSubmit: handleSignUp, formState: {errors: errorsSignUp}} = useForm<SignInForm>({
         resolver: zodResolver(schema),
@@ -38,7 +40,7 @@ const SignInUp = () => {
             password: '',
             name: '',
         },
-        mode: 'onBlur'
+        
     })
         
     const onSignIn: SubmitHandler<SignInForm> = (data) => {
@@ -48,12 +50,15 @@ const SignInUp = () => {
         signUp(data)
     }
     const signInSocial = async() => {
+        setLoading(true)
         const result = await authClient.signIn.social({
         provider:'google',
         callbackURL: '/dashboard'
     })
     if(result.error) {
+    
         console.log(result.error)
+    setLoading(false)
     }
   }
 
@@ -139,20 +144,22 @@ const SignInUp = () => {
                 </button>
 
   
-          <button 
+         
+               
+              </div>
+            </form>
+            <button 
             onClick={() => signInSocial()}
-            className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors duration-300 mt-2"
+            disabled={loading}
+            className={`${loading ? 'opacity-50 cursor-default' : ''} cursor-pointer w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors duration-300 mt-2`}
           >
             <img 
               src="/google.svg" 
               alt="Google logo" 
               className="mr-2 h-5 w-5"
             />
-            <span className="text-gray-700 font-medium">Sign in with Google</span>
+            <span className="text-gray-700 font-medium">{loading ? <>Signing in...</> : 'Sign in with Google'}</span>
           </button>
-               
-              </div>
-            </form>
             </div>
           </div>
 
@@ -213,16 +220,17 @@ const SignInUp = () => {
                   {isSignUpPending ? 'Creating...' : 'Create Account'}
                 </button>
 
-          <button 
+                <button 
             onClick={() => signInSocial()}
-            className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors duration-300 mt-2"
+            disabled={loading}
+            className={`${loading ? 'opacity-50 cursor-default' : ''} cursor-pointer w-full flex items-center justify-center border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors duration-300 mt-2`}
           >
             <img 
               src="/google.svg" 
               alt="Google logo" 
               className="mr-2 h-5 w-5"
             />
-            <span className="text-gray-700 font-medium">Sign in with Google</span>
+            <span className="text-gray-700 font-medium">{loading ? <>Signing in...</> : 'Sign in with Google'}</span>
           </button>
               </div>
             </form>

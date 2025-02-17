@@ -5,6 +5,10 @@ import { createCheckoutSession } from "@/lib/stripe"
 import { auth } from "@/lib/auth"
 import { user } from "@/server/db/schema"
 import { eq } from "drizzle-orm"
+import { orders } from "@/server/db/schema"
+import { cart } from "@/server/db/schema"
+import { cartitem } from "@/server/db/schema"
+import { getSignedCookie } from "hono/cookie"
 //zod schema for input
 const createCheckoutSessionSchema = z.object({
   rawItems: z.array(z.object({}).passthrough()),
@@ -23,7 +27,7 @@ export const paymentRouter = j.router({
     .input(createCheckoutSessionSchema)
     .mutation(async ({ ctx, c, input }) => {
       try{
-      const { cartItems, rawItems } = input
+      const { cartItems } = input
       const { db } = ctx
       const session = await auth.api.getSession({
         headers: c.req.raw.headers
@@ -53,8 +57,34 @@ export const paymentRouter = j.router({
     console.error("Error creating checkout session:", error);
     return c.json({ error: "Failed to create checkout session" }, 500);
   }
+}),
+getSuccessfulOrder: publicProcedure
+    .input(z.object({
+        stripeId: z.string(),
+    }))
+    .query(async ({ c, ctx, input }) => {
+        const { stripeId } = input
+        const { db } = ctx
+        const secret = process.env.COOKIE_SECRET as string
+        let guestToken = await getSignedCookie(c, secret)
+        const session = await auth.api.getSession({
+          headers: c.req.raw.headers
+        })
+        const order = await db.select().from(orders).where(eq(orders.stripe_id, stripeId))
+        if(session){
+          const cartid = await db.select({id: cart.id}).from(cart).where(eq(cart.user_id, session.session.userId))
+          if(cartid[0]){
+          const deleteCartItems = await db.delete(cartitem).where(eq(cartitem.cartid, cartid[0].id))
+        } 
+        else {
+          const cartid = await db.select({id: cart.id}).from(cart).where(eq(cart.guest_token, guestToken.guestCartID as string))
+          if(cartid[0]){
+            const deleteCartItems = await db.delete(cartitem).where(eq(cartitem.cartid, cartid[0].id))
+          }
+        }
+      }
+        return c.superjson(order)
+    })
 })
-    
- })
     
 

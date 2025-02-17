@@ -1,7 +1,10 @@
+
 import Link from "next/link"
 import { User } from "lucide-react"
 
 const NavUser = ({isSignedIn, name}: {isSignedIn: boolean, name?: string}) => {
+
+    
     return (
         <div>            
                 {isSignedIn ? (       

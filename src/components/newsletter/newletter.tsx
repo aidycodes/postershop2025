@@ -16,13 +16,13 @@ const Newsletter = ({bannerImage, bannerTitle, bannerSubtitle}: {bannerImage?: s
           <div className="relative aspect-[4/3] w-full">
 
             <Image 
-              src={bannerImage || "/categorys/Anime.jpg"} 
+              src={bannerImage || "/mail.webp"} 
               alt="Poster collection" 
               className="w-full h-full object-cover rounded-lg"
               width={600}
               height={400}
             />
-            <div className="absolute inset-0 bg-blue-600 bg-opacity-20 rounded-l-lg"></div>
+            <div className="absolute inset-0 bg-blue-600/80 rounded-l-lg"> </div>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center">
 
               <h3 className="text-4xl font-bold mb-2">{bannerTitle || 'SIGN UP & SAVE'}</h3>

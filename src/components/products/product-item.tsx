@@ -19,7 +19,12 @@ export interface Poster {
         },
         stripeIds: {
             [key: string]: string
-        }
+        },
+        Stock: { Small: number 
+            Medium: number
+            Large: number
+            XLarge: number
+        };
     }
 
 }
@@ -48,12 +53,18 @@ const ProductItem = ({poster}: {poster: Poster}) => {
             setSelectedSize(size);
     }
   
+    const handleOptionsOutOfStock = (sizeString: string) => {
+        const size = sizeString?.split(' ')[0]
+        console.log(size, 'size')
+        console.log(poster?.options?.Stock?.[size as keyof typeof poster.options.Stock] , 'stock')
+        return poster?.options?.Stock?.[size as keyof typeof poster.options.Stock] || 0
+    }
+
     return (
         <div key={poster.id} className="group flex flex-col">
-
             {/* Title and price - above image on small screens, below on lg */}
             <div className="order-1 lg:order-2 lg:mt-4 flex lg:block items-center justify-between mr-2 lg:mr-0">
-                <h4 className="text-lg font-medium lg:mb-1">{poster.productname}</h4>
+                <h4 className="text-lg font-medium lg:mb-1">{poster.productname}</h4> 
                 <p className="text-gray-600 lg:mb-2 font-semibold">£{selectedSize[1]}</p>
             </div>
             {/* Image container */}
@@ -65,7 +76,7 @@ const ProductItem = ({poster}: {poster: Poster}) => {
                     className="w-full h-full object-cover transform transition-transform group-hover:scale-105"
                 />
                  <div className="absolute top-0 left-0 w-auto h-auto flex items-start justify-start p-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
-                    <ProductStock stock={poster?.stock ?? 0} />
+                    <ProductStock stock={handleOptionsOutOfStock(selectedSize[0])} />
                 </div>
                 {/* Desktop overlay button */}
                 <>

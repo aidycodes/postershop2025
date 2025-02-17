@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 type Size = [string, string | number][]
+import { extractASize } from "@/lib/utils";
 
 const SizeCircle = ({label, size, onClick, selected}: {
     label: string, 
@@ -22,8 +23,8 @@ const SizeCircle = ({label, size, onClick, selected}: {
                     <span className="text-sm font-medium">{label}</span>
                 </div>
                 {isVisible && (
-          <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap">
-            {size?.[0]}
+          <div className=" absolute bottom-24 left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap">
+            {size?.[0]} 
             <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
           </div>
         )}
@@ -56,6 +57,12 @@ const SizeSelector = ({selectedSize, setSelectedSize, sizes}:
       setSelectedSize: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, size: [string, string | number]) => void, 
       sizes: Size }) => {
 
+        const sortedSizes = sizes.sort((a, b) => {
+            const sizeA = extractASize(a[0]);
+            const sizeB = extractASize(b[0]);
+            return sizeB - sizeA;
+        });
+  
     return (
         <div className="flex items-center gap-2">
             <SizeCircle label='S' size={sizes?.[0]} onClick={setSelectedSize} selected={selectedSize === sizes?.[0]?.[0]} />

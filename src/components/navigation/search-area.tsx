@@ -5,7 +5,7 @@ import { client } from "@/lib/client";
 import SearchItem from './search-item';
 import { useRef } from 'react';
 import { SearchItemSkeleton } from './search-item';
-
+import { useDebounce } from '@/lib/hooks/use-debounce';
 interface SearchAreaProps {
   isLoading?: boolean;
   onClose?: () => void;
@@ -15,32 +15,32 @@ interface SearchAreaProps {
 const SearchArea = ({ onClose, isOpen }: SearchAreaProps) => {
 
     const [searchQuery, setSearchQuery] = useState('')
+    
+    const clickedInside = useRef(false);
+    const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const clickedInside = useRef(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseDown = () => {
-    clickedInside.current = true;
-  };
-
-  const handleBlur = () => {
-    if (clickedInside.current) {
-      clickedInside.current = false; // Reset flag
-      return;
-    }
-    // Trigger your action here (clicked outside)
-   onClose?.()
-  };
+    const debouncedSearchQuery = useDebounce(searchQuery, 500)
 
     const { data: searchResults, isLoading } = useQuery({
-      queryKey: ["search", searchQuery],
+      queryKey: ["search", debouncedSearchQuery],
       queryFn: async() => {
-        const res = await client.products.searchProducts.$get({query:searchQuery, limit:10})     
-        return await res.json()
-      },
-      enabled: !!searchQuery
+          const res = await client.products.searchProducts.$get({query:debouncedSearchQuery, limit:10})     
+          return await res.json()
+        },
+        enabled: !!debouncedSearchQuery
     })
-
+    
+    const handleMouseDown = () => {
+      clickedInside.current = true;
+    };
+  
+    const handleBlur = () => {
+      if (clickedInside.current) {
+        clickedInside.current = false; // Reset flag
+        return;
+      }
+     onClose?.()
+    };
     if(!isOpen) return null
   return (
     <div >
