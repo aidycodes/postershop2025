@@ -35,19 +35,19 @@ const OrderTable = () => {
             limit: 10,
             offset: (page - 1) * 10
         })
-        return res.json()
+        return await res.json()
     },
     })
-    if(!data) return null
-    
+   
+
     const handlePageChange = (newPage: number) => {
-        if(!data?.orderCount) return
-        if (newPage >= 1 && newPage <= Math.ceil(data?.orderCount?.[0]?.count / 10)) {
+        const totalCount = data?.orderCount?.[0]?.count ?? 0;
+        const totalPages = Math.ceil(totalCount / 10);
+        
+        if (newPage >= 1 && newPage <= totalPages) {
             setPage(newPage);
         }
     }
-
-    
 
     const toggleOrder = (orderId: string) => {
         setExpandedOrders(prev => {
@@ -165,11 +165,14 @@ const OrderTable = () => {
                         >
                             Previous
                         </button>
-                     <span className="text-sm text-gray-600 text-center md:mr-6">Page {page} of {Math.ceil(data?.orderCount[0].count / 10)}</span>
+                     <span className="text-sm text-gray-600 text-center md:mr-6">
+                        Page {page} of {Math.ceil(data?.orderCount?.[0]?.count ?? 0 / 10)}
+                     </span>
                     
                         <button 
-                            className={cn(`px-3 ml-auto py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer`, page === Math.ceil(data?.orderCount[0].count / 10) ? 'opacity-50 cursor-default hover:text-gray-600' : '')} 
-                            disabled={page === Math.ceil(data?.orderCount[0].count / 10)} 
+                            className={cn(`px-3 ml-auto py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer`, 
+                                page === Math.ceil(data?.orderCount?.[0]?.count ?? 0 / 10) ? 'opacity-50 cursor-default hover:text-gray-600' : '')} 
+                            disabled={page === Math.ceil(data?.orderCount?.[0]?.count ?? 0 / 10)} 
                             onClick={() => handlePageChange(page + 1)}
                         >
                             Next

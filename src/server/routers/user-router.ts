@@ -32,14 +32,11 @@ export const usersRouter = j.router({
     .query(async ({ c, ctx, input }) => {
       const { userId } = ctx.session.session
       const { limit = 10, offset = 0 } = input ?? {}
-
       //order count
       const [userOrders, orderCount] = await Promise.all([
         ctx.db.select().from(orders).where(eq(orders.user_id, userId)).orderBy(desc(orders.created_at)).limit(limit).offset(offset),
         ctx.db.select({count:count()}).from(orders).where(eq(orders.user_id, userId)).limit(1).offset(0)
       ])
-
-  
       // Fetch order items for each order
       const ordersWithItems = await Promise.all(
         userOrders.map(async (order) => {
@@ -48,7 +45,6 @@ export const usersRouter = j.router({
             .from(orderitem)
             .where(eq(orderitem.orderid, order.id))
             
-
           return {
             ...order,
             orderItems, // Include the order items in the order object
