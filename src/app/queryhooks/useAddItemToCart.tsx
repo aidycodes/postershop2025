@@ -18,7 +18,7 @@ const useAddItemToCart = () => {
     const {mutate, isPending} = useMutation({
         mutationFn: async ({poster, selectedSize, withFrame, quantity, totalPrice}: AddItemToCartProps) => {
                   const size = selectedSize.split(' ')[0] as string
-
+                queryClient.cancelQueries({ queryKey: ['cart'] })
             queryClient.setQueryData(['cart'], (old: any) => {
                 return {cart: old.cart, items: [...old.items, {
                     id: id,
@@ -38,7 +38,7 @@ const useAddItemToCart = () => {
                 }]}
             })
 
-            const response = await client.guestCart.addToCart.$post({
+            const response = await client.cart.addToCart.$post({
                 productname: poster.productname,
                 product_id: poster.id,
                 image: poster.image as string,
@@ -52,12 +52,18 @@ const useAddItemToCart = () => {
                 }
               
             })
+            return response
         },
-        onSuccess: () => {      
-            queryClient.invalidateQueries({ queryKey: ['cart'] })
+        onSuccess: async () => {  
+            console.log('success')
+            await queryClient.invalidateQueries({ queryKey: ['cart'] })
         },
         onError: (error) => {
             console.log(error, 'error')
+        },
+        onSettled: () => {
+            console.log('settled')
+            queryClient.invalidateQueries({ queryKey: ['cart'] })
         }
     })
 

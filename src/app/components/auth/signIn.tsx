@@ -11,7 +11,7 @@ const CuteSignIn = () => {
    const result =  await authClient.signIn.email({
         email,
         password,
-        callbackURL: '/dashboard'
+        callbackURL: '/SignedInSuccess'
     })
     if(result.error) {
         console.log(result.error)
@@ -22,7 +22,7 @@ const CuteSignIn = () => {
   const signInSocial = async() => {
     const result = await authClient.signIn.social({
         provider:'google',
-        callbackURL: '/dashboard'
+        callbackURL: '/SignedInSuccess'
     })
     if(result.error) {
         console.log(result.error)

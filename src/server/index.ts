@@ -3,6 +3,8 @@ import { productsRouter } from "./routers/products-router"
 import { usersRouter } from "./routers/user-router"
 import { GuestCartRouter } from "./routers/guest-cart-router"
 import { paymentRouter } from "./routers/payment-router"
+import { cartRouter } from "./routers/cart-router"
+
 /**
  * This is your base API.
  * Here, you can handle errors, not-found responses, cors and more.
@@ -24,6 +26,7 @@ const appRouter = j.mergeRouters(api, {
   products: productsRouter,
   users: usersRouter,
   payment: paymentRouter,
+  cart: cartRouter
 })
 
 export type AppRouter = typeof appRouter

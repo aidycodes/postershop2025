@@ -28,15 +28,11 @@ export async function POST(req: NextRequest) {
       console.error('❌ Webhook signature verification failed.', err);
       return new NextResponse('Webhook signature verification failed.', { status: 400 });
     }
-   // console.log('🔒 Verified event:', event);
-    // Handle different event types
+
     if(event.type === 'checkout.session.completed'){
         const session = event.data.object as Stripe.Checkout.Session;
         console.log('✅ Checkout completed');
-         if(session.metadata?.userId){
-            console.log('✅ User ID found in metadata');
-         }
-     console.log(session.customer_email, session.amount_total, session.shipping_cost, session.shipping_cost?.amount_total, session.customer_details?.address)
+    
  if(session.customer_details?.address){
     
      const addressKeysOrder = ['line1', 'line2', 'city', 'state', 'postal_code', 'country']; // Define your known keys in the desired order
@@ -48,23 +44,19 @@ export async function POST(req: NextRequest) {
          .map(([_, value]) => value)
          .join(', ');
 
-         const order = await db.insert(orders).values({
-            id: createId(),
-            stripe_id: session.id,
-            total: session.amount_total?.toString(),     
-            status: 'paid',
-            user_email: session.customer_email,
-            deliveryAddress: sortedAddress,
-            postage: session.shipping_cost?.amount_total === 0 ? 'free' : 'standard',
-            postage_cost: session.shipping_cost?.amount_total?.toString() || '0'
-         }).returning({id: orders.id})
-        // Retrieve the session with line items expanded
-        const expandedSession = await stripe.checkout.sessions.retrieve(
-          session.id,
-          {
-            expand: ['line_items', 'customer']
-          }
-        );       
+         if(session.metadata?.userId){
+            console.log('✅ User ID found in metadata');
+            const order = await db.insert(orders).values({
+                id: createId(),
+                stripe_id: session.id,
+                user_id: session.metadata?.userId || null,
+                total: session.amount_total?.toString(),     
+                status: 'paid',
+                user_email: session.customer_email,
+                deliveryAddress: sortedAddress,
+                postage: session.shipping_cost?.amount_total === 0 ? 'free' : 'standard',
+                postage_cost: session.shipping_cost?.amount_total?.toString() || '0'
+             }).returning({id: orders.id})
        
         const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
           expand: ['data.price.product']
@@ -88,10 +80,47 @@ export async function POST(req: NextRequest) {
                     });
                 }
             }
-        }));
+        }))
+    }
                        
         } else {
-            console.log('No Order Id');
+            const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+                expand: ['data.price.product']
+              });
+            console.log('✅ Guest order here');
+            const guestorder = await db.insert(orders).values({
+                id: createId(),
+                stripe_id: session.id,
+                total: session.amount_total?.toString(),     
+                status: 'paid',
+                user_email: session.customer_details.email,
+                deliveryAddress: sortedAddress,
+                postage: session.shipping_cost?.amount_total === 0 ? 'free' : 'standard',
+                postage_cost: session.shipping_cost?.amount_total?.toString() || '0'
+             }).returning({id: orders.id})
+        console.log('✅ Guest orderId here', guestorder);
+             if(guestorder?.[0]?.id){
+                console.log('✅ Guest order created');
+                const orderItems = await Promise.all(lineItems.data.map(async (item) => {
+                    const product = item?.price?.product;
+                    if (product && typeof product !== 'string' && 'images' in product) {
+                        const quantity = item?.quantity || 0;
+                        const price = item?.price?.unit_amount || 0;
+        
+                        if (quantity !== undefined && price !== undefined) {
+                            const orderItem = await db.insert(orderitem).values({
+                                id: createId(),
+                                orderid: guestorder?.[0]?.id,
+                                productid: product.id,
+                                productname: product.name,
+                                productimage: product.images[0],
+                                quantity: Number(quantity),
+                                price: price.toString(),
+                            });
+                        }
+                    }
+                }))
+             }
         }
     
     }

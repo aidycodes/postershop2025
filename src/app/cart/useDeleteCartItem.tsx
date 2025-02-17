@@ -6,17 +6,18 @@ const useDeleteCartItem = (id: string) => {
     const queryClient = useQueryClient()
     const { mutate: deleteCartItem, isPending } = useMutation({
         mutationFn: async () => {
+            queryClient.cancelQueries({ queryKey: ['cart'] })
             queryClient.setQueryData(['cart'], (old: any) => {
                 return {
                     ...old,
                     items: old.items.filter((item: CartItemType) => item.id !== id)
                 }
             })
-            const res = await client.guestCart.deleteCartItem.$post({ id })
+            const res = await client.cart.deleteCartItem.$post({ id })
             return res.json()
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['cart'] })
+        onSuccess: async() => {
+            await queryClient.invalidateQueries({ queryKey: ['cart'] })
         }
     })
     return { deleteCartItem, isPending }

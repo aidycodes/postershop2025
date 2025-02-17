@@ -35,11 +35,11 @@ export const usersRouter = j.router({
 
      const userOrders = await ctx.db.query.orders.findMany({
         where: eq(orders.user_id, userId),
-        with: {
-            orderItems:true
-        },
         limit: limit,
         offset: offset,
+        with: {
+            orderitem:true
+        },
         orderBy: desc(orders.created_at)
      })
 

@@ -31,13 +31,12 @@ export const paymentRouter = j.router({
  if (!session) {
     const checkoutsession = await createCheckoutSession({
         cartItems,
-        userEmail: 'guest@guest.com',
-        userId: 'guest',
     })
     return c.json({url: checkoutsession.url})
 }
     if(session){
     const currentUser = await db.select().from(user).where(eq(user.id, session.session.userId))
+    console.log(currentUser, 'currentUser')
     if(!currentUser){
         return c.json({error: 'User not found'}, 404)
     }

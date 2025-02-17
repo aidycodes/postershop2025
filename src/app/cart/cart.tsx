@@ -18,7 +18,7 @@ const Cart = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['cart'],
     queryFn: async() => {
-      const res = await client.guestCart.getCart.$get()
+      const res = await client.cart.getCart.$get()
       return res.json()
     }
   })
@@ -51,7 +51,7 @@ const Cart = () => {
   const items = [...(data?.items || [])].sort((a, b) => 
     new Date(b.created_at as Date).getTime() - new Date(a.created_at as Date).getTime()
   );
-  const subtotal = items?.reduce((acc, item) => acc + (+item.price * item.qty), 0) || 0;
+  const subtotal = items?.reduce((acc, item) => acc + (+item?.price * item?.qty), 0) || 0;
   const shipping = subtotal > 50 ? 0 : 5.99 
   const total = subtotal + shipping 
   

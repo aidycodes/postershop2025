@@ -12,7 +12,8 @@ const NavCart = ({ isSignedIn }: NavCartProps) => {
     const { data } = useQuery({
         queryKey: ['cart'],
         queryFn: async () => {
-            const res = await client.guestCart.getCart.$get();
+            const res = await client.cart.getCart.$get();
+
             if (res.status !== 200) {
                 throw new Error("Failed to fetch cart");
             }
@@ -32,9 +33,10 @@ const NavCart = ({ isSignedIn }: NavCartProps) => {
         }
        
     });
-
+console.log(data, 'data')
     const cart = data?.cart;
     const items = data?.items;
+    
 
     return (
         <div className="relative">

@@ -5,6 +5,8 @@ import PromotionBanner from "@/components/navigation/promotion-banner"
 import Navbar from "@/components/navigation/navbar"
 import type { Category } from "@/components/categorys/categorys"
 import { client } from "@/lib/client"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -13,20 +15,34 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 }
 
+export interface UserSession {
+  id: string;
+  email: string;
+  emailVerified: boolean;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  image: string | null;
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   const categories = await client.products.getCategorys.$get()
-  const categoriesData: {data: Category[]} = await categories.json()
+  const categoriesData: {data: Category[]} = await categories.json() 
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+
   return (
     <html lang="en">
       <body className="antialiased">
 
         <Providers>
           <PromotionBanner promotion="Save now up to 20% off for new customers with code: " showPromotion={true} code="NEW20" />
-          <Navbar categories={categoriesData.data} />
+          <Navbar categories={categoriesData.data} session={session?.user as UserSession | null} />
             {children}
           <Footer blurb="Curating beautiful posters for your space since 2024."
           storeName="Poster Shop" infoPages={["Shipping", "Returns", "FAQ", "Contact Us"]} />
