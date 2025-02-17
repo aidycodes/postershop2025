@@ -14,9 +14,9 @@ const Suggestions = ({title, classNames }: {title: string, classNames?: string})
     <>
         <h2 className={cn("text-2xl font-bold mb-6", classNames)}>{title}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {relatedProducts.map((product) => (
+          {/* {relatedProducts.map((product) => (
              <ProductItem key={product.id} poster={product} />
-          ))}
+          ))} */}
         </div>
     </>
     )

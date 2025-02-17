@@ -1,9 +1,12 @@
 import { orders, user, orderitem } from "@/server/db/schema"
 import { eq, desc, count } from "drizzle-orm"
 import { z } from "zod"
-import { j, protectedProcedure } from "../jstack"
+import { j, protectedProcedure, publicProcedure } from "../jstack"
 import { cart } from "@/server/db/schema"
 import { HTTPException } from "hono/http-exception"
+import { getCookie } from "hono/cookie"
+
+import { cookies } from "next/headers"
 
 export const usersRouter = j.router({
   // Get current user
@@ -15,12 +18,16 @@ export const usersRouter = j.router({
         .from(user)
         .where(eq(user.id, userId))
         .limit(1)
-      
+      if(!currentUser[0]) {
+        throw new HTTPException(404, {
+          message: "User not found"
+        })
+      }
 
       // user is already available in ctx from the protectedProcedure
-      return c.json({
-        currentUser
-      })
+      return c.json(
+        currentUser[0]
+      )
     }),
  
   // Get user's orders

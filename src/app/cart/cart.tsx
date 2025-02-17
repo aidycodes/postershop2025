@@ -15,7 +15,7 @@ type SelectedOptions = {
 }
 
 const Cart = () => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isPending: isCartLoading } = useQuery({
     queryKey: ['cart'],
     queryFn: async() => {
       const res = await client.cart.getCart.$get()
@@ -44,7 +44,9 @@ const Cart = () => {
     }
   })
   const router = useRouter()
-  if (isLoading) {
+
+
+  if (isLoading || isCartLoading) {
     return <LoadingCart />;
   }
 

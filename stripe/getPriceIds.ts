@@ -62,9 +62,8 @@ async function getProductsWithPrices() {
         productId: product.id,
         pricesID: product.default_price ? [product.default_price as string] : undefined
     }));
-       console.log(productData[100], 'length')
+     
     
-    console.log(productData)
 
     const productWithPriceSizeIds = productData.reduce<ProductWithPriceSizeIds[]>((acc, product) => {
 
@@ -72,7 +71,7 @@ async function getProductsWithPrices() {
 
         const size = product.productName.split(" - ")[product.productName.split(" - ").length-1]
 
-        console.log({productName}, {size})
+   
         
         const foundProduct = acc.find((p) => p.productName === productName)
         if(foundProduct){
@@ -98,7 +97,7 @@ async function getProductsWithPrices() {
 }}]
     }, []);
     saveProductsToFile(productWithPriceSizeIds)
-   // console.log(JSON.stringify(productWithPriceSizeIds, null, 2));
+ 
     } catch (error) {
         console.error(error);
     }

@@ -5,7 +5,8 @@ type tParams = Promise<{name: string}>
 
 const Page = async (params: { params: tParams }) => {
     const { name } = await params.params;
-    const product = await client.products.productByName.$get({name: name.replaceAll('%20', ' ')})
+    const decodedString = decodeURIComponent(name)
+    const product = await client.products.productByName.$get({name: decodedString})
     const productData: ProductProps[] = await product.json();
     if (!productData[0]) return <div>Product not found</div>;
     

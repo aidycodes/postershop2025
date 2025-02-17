@@ -21,16 +21,7 @@ const NavCart = ({ isSignedIn }: NavCartProps) => {
             
             return res.json();
         },
-        initialData: {
-            cart: {
-                id: '',
-                user_id: null,
-                guest_token: null,
-                created_at: null,
-                updated_at: null
-            },
-            items: []
-        }
+     
        
     });
 console.log(data, 'data')

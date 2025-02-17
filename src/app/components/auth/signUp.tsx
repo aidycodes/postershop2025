@@ -26,7 +26,7 @@ export default function SignUp() {
         }, 
       }); 
   };
-  console.log(name, email, password)
+
  
   return (
     <div className="flex flex-col items-center justify-center gap-4">

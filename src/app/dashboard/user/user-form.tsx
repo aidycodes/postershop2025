@@ -4,8 +4,9 @@ import { useMutation } from "@tanstack/react-query"
 import { client } from "@/lib/client"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-
-
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react"
 
 const USER_VALIDATOR = z.object({
     name: z.string().min(1, "Name is required"),
@@ -19,16 +20,40 @@ const USER_VALIDATOR = z.object({
 
 type UserForm = z.infer<typeof USER_VALIDATOR>
 
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: string | null;
+    phone: string | null;
+    city: string | null;
+    country: string | null;
+    postal_code: string | null;
+    address: string | null;
+    createdAt: string;
+    updatedAt: string
+}
 export const UserForm = () => {
+    const [showToast, setShowToast] = useState(false)
+    const queryClient = useQueryClient()
+    const { data, isLoading } = useQuery({
+        queryKey: ['user'],
+        queryFn: async () => {
+            const res = await client.users.me.$get()
+            return res.json()
+        },
+        
+    })
 
     const { mutate: updateUser, isPending } = useMutation({
         mutationFn: async (data: UserForm) => {
-           const res = await client.users.updateUser.$post(data)
-           console.log(res)
+           const res = await client.users.updateUser.$post(data)  
            return res.json()
         },
-        onSuccess: (data) => {
-            console.log(data)
+        onSuccess: async(data) => {
+            await queryClient.invalidateQueries({ queryKey: ['user'] })
+            setShowToast(true)
         },
         onError: (error) => {
             console.log({error})
@@ -37,24 +62,32 @@ export const UserForm = () => {
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<UserForm>({
         resolver: zodResolver(USER_VALIDATOR),
         defaultValues: {
-            name: "",
-            email: "",
-            phone: "",
-            city: "",
-            country: "",
-            postal_code: "ss",
-            address: "",
+            name: data?.name ?? "",
+            email: data?.email ?? "",
+            phone: data?.phone ?? "",
+            city: data?.city ?? "",
+            country: data?.country ?? "",
+            postal_code: data?.postal_code ?? "",
+            address: data?.address ?? "",
         },
         mode: "onBlur"
     })
     const onSubmit: SubmitHandler<UserForm> = (data) => {
-        console.log({data})
        updateUser(data)
     }
 
+    useEffect(() => {
+        if (showToast) {
+            setTimeout(() => {
+                setShowToast(false)
+            }, 3000)
+        }
+    }, [showToast])
     return (
-        <div className="mb-2">
-            <div className="overflow-hidden">
+        <>
+            <Toast message="User updated successfully" show={showToast} onClose={() => {}} classNames="bg-green-600/80 shadow-xl border border-green-400 " position="p-6 top-0 right-0 z-50" />
+        <div className="mb-2 relative">
+            <div className="overflow-hidden relative">
             <form className="flex flex-col  gap-1 " onSubmit={handleSubmit(onSubmit)}>
                 <div className="p-2">
                     <div className="flex flex-col gap-2 ">
@@ -140,5 +173,30 @@ export const UserForm = () => {
             </form>
             </div>
         </div>
+        </>
     )
-}   
+}
+
+interface ToastProps {
+    message: string
+    show: boolean
+    onClose: () => void
+    classNames?: string
+    position?: string
+}
+
+const Toast = ({ message, show, onClose, position, classNames }: ToastProps) => {
+    return (
+      <div className={cn(`absolute bottom-4 right-4 transition-all duration-300 ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'} pointer-events-none`, position)}>
+        <div className={cn(`bg-gray-800 text-white px-4 py-2 rounded-lg flex items-center space-x-4 pointer-events-auto`, classNames)}>
+          <span>{message}</span>
+          <button 
+            onClick={onClose}
+            className="hover:bg-gray-700 rounded-full p-1"
+          >
+        
+          </button>
+        </div>
+      </div>
+    );
+  };

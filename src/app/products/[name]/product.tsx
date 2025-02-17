@@ -29,18 +29,14 @@ export interface ProductProps {
 const ProductPage = ({ id, productname, image, description, stock, sku, options }: ProductProps) => {
 
 const sizes = Object.entries(options?.sizes || {})
- console.log(sizes[0], 'sizes33')
+
   const [selectedSize, setSelectedSize] = useState<[string, number]>(['Small (A3 - 11.7" × 16.5" / 297 × 420 mm)', 10]);
   const [withFrame, setWithFrame] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  console.log(selectedSize, 'selectedSize')
-  console.log(options, 'otpions')
 
-  console.log(options.Stock.Small, 'stock')
  
   const framePrice = 29.99;
   const totalPrice = (Number(selectedSize[1]) + (withFrame ? framePrice : 0)) * quantity;
-console.log({totalPrice})
   const handleQuantityChange = (delta: number) => {
     setQuantity(Math.max(1, quantity + delta));
   };
@@ -78,7 +74,7 @@ const selectedSizeStock = options?.Stock?.[
     return sizeKey === 0;
   }
 
- console.log(options, 'opt')
+
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="grid md:grid-cols-2 gap-8">

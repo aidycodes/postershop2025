@@ -138,7 +138,6 @@ export const cartRouter = j.router({
                 .leftJoin(cartitem, eq(cart.id, cartitem.cartid))
                 .where(eq(cart.user_id, session.user.id))
                 .groupBy(cart.id)
-                console.log(userCart[0]?.items.filter((item) => item), 'userCart')
                 return c.superjson({cart: userCart[0]?.cart, items: userCart[0]?.items})
             
 } 

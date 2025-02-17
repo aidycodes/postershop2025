@@ -2,6 +2,9 @@ import { UserForm } from "./user-form"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import { client } from "@/lib/client"
+import { User } from "./user-form"
+import { cookies } from "next/headers"
 
 const UserPage = async () => {
   const session = await auth.api.getSession({
@@ -11,6 +14,8 @@ if(!session) {
   redirect('/sign-in')
     
 }
+
+
     return (
         <div className="h-full w-full  mx-auto md:px-4 pl-[64px] md:pl-0 md:max-w-[70%] lg:max-w-[50%] lg:ml-[402px] md:ml-[256px] md:mr-[256px]">
           <div className="flex flex-col">

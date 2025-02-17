@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 async function createSizeProducts() {
   for (const product of Products) {
     for (const [sizeName, price] of Object.entries(product.options.sizes)) {
-      console.log(product.productname, product.image, sizeName.split(' ')[0], price);
+   
       
   const result = await retryWithBackoff(async () => {
         const stripeProduct = await stripe.products.create({

@@ -5,6 +5,7 @@ import SizeSelector from "./productSize";
 import { useState } from "react";
 import useAddItemToCart from "@/app/queryhooks/useAddItemToCart";
 import ProductStock from "./product-stock";
+import Image from "next/image";
 
 export interface Poster {
     id: string;
@@ -55,8 +56,6 @@ const ProductItem = ({poster}: {poster: Poster}) => {
   
     const handleOptionsOutOfStock = (sizeString: string) => {
         const size = sizeString?.split(' ')[0]
-        console.log(size, 'size')
-        console.log(poster?.options?.Stock?.[size as keyof typeof poster.options.Stock] , 'stock')
         return poster?.options?.Stock?.[size as keyof typeof poster.options.Stock] || 0
     }
 
@@ -70,10 +69,12 @@ const ProductItem = ({poster}: {poster: Poster}) => {
             {/* Image container */}
 
             <Link href={`/products/${poster.productname}`} className="relative overflow-hidden rounded-lg order-2 lg:order-1">
-                <img 
+                <Image 
                     src={poster.image ?? "/categorys/Anime.jpg"} 
                     alt={poster.productname}
                     className="w-full h-full object-cover transform transition-transform group-hover:scale-105"
+                    width={600}
+                    height={400}
                 />
                  <div className="absolute top-0 left-0 w-auto h-auto flex items-start justify-start p-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
                     <ProductStock stock={handleOptionsOutOfStock(selectedSize[0])} />

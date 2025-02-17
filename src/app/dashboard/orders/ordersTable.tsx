@@ -37,7 +37,7 @@ const OrderTable = () => {
         return await res.json()
     },
     })
-   console.log(data)
+ 
 
     const handlePageChange = (newPage: number) => {
         const totalCount = data?.orderCount ?? 0;
