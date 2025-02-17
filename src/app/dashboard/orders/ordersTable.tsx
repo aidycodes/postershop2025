@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import dayjs from 'dayjs';
-import { QueryClient } from '@tanstack/react-query';
 import { useQuery } from "@tanstack/react-query"
 import { client } from "@/lib/client"
 import { cn } from '@/lib/utils';
@@ -11,7 +10,7 @@ import NoOrders from './noOrders';
 interface Order {
     id: string;
     created_at: Date | null;
-    total: number;
+    total: string | null;
     postage: string;
     status: string;
     deliveryAddress: string;
@@ -38,10 +37,10 @@ const OrderTable = () => {
         return await res.json()
     },
     })
-   
+   console.log(data)
 
     const handlePageChange = (newPage: number) => {
-        const totalCount = data?.orderCount?.[0]?.count ?? 0;
+        const totalCount = data?.orderCount ?? 0;
         const totalPages = Math.ceil(totalCount / 10);
         
         if (newPage >= 1 && newPage <= totalPages) {
@@ -84,7 +83,7 @@ const OrderTable = () => {
                         </>
                     )}
                   
-                    {data?.ordersWithItems.map((order: Order) => (
+                    {data?.ordersWithItems.map((order) => (
                         <React.Fragment key={order.id}>
                             <tr 
                                 className="hover:bg-gray-50 cursor-pointer"
@@ -92,7 +91,7 @@ const OrderTable = () => {
                             >
                                 <td className="p-4 text-sm text-gray-600">{order.id.slice(0, 8)}...</td>
                                 <td className="p-4 text-sm text-gray-600">{dayjs(order.created_at).format('DD-MM-YYYY')}</td>
-                                <td className="p-4 text-sm text-gray-600">£{(Math.round(order.total) / 100).toFixed(2)}</td> 
+                                <td className="p-4 text-sm text-gray-600">£{order.total}</td> 
                                 <td className="p-4 text-sm text-gray-600">
                                     {order.postage}
                                 </td>
@@ -131,8 +130,8 @@ const OrderTable = () => {
                                                 {order.orderItems.map((item) => (
                                                     <div key={item.id} className="flex flex-col md:flex-row items-center space-x-4 p-2 bg-white rounded-lg">
                                                         <img 
-                                                            src={item.productimage} 
-                                                            alt={item.productname}
+                                                            src={item.productimage ?? ''} 
+                                                            alt={item.productname ?? ''}
                                                             className="w-16 h-16 object-cover rounded"
                                                         />
                                                         <div className="flex-1">
@@ -165,11 +164,14 @@ const OrderTable = () => {
                         >
                             Previous
                         </button>
-                     <span className="text-sm text-gray-600 text-center md:mr-6">Page {page} of {Math.ceil(data?.orderCount[0].count / 10)}</span>
+                     <span className="text-sm text-gray-600 text-center md:mr-6">
+                        Page {page} of {Math.ceil(data?.orderCount ? data?.orderCount / 10 :  0)}
+                     </span>
                     
                         <button 
-                            className={cn(`px-3 ml-auto py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer`, page === Math.ceil(data?.orderCount[0].count / 10) ? 'opacity-50 cursor-default hover:text-gray-600' : '')} 
-                            disabled={page === Math.ceil(data?.orderCount[0].count / 10)} 
+                            className={cn(`px-3 ml-auto py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer`, 
+                                page === Math.ceil(data?.orderCount ? data?.orderCount / 10 :  0) ? 'opacity-50 cursor-default hover:text-gray-600' : '')} 
+                            disabled={page === Math.ceil(data?.orderCount ? data?.orderCount / 10 :  0)} 
                             onClick={() => handlePageChange(page + 1)}
                         >
                             Next

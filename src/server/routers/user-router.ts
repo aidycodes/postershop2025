@@ -28,12 +28,12 @@ export const usersRouter = j.router({
     .input(z.object({
       limit: z.number().min(1).max(50).default(1),
       offset: z.number().min(0).default(0)
-    }).optional())
+    }))
     .query(async ({ c, ctx, input }) => {
       const { userId } = ctx.session.session
       const { limit = 10, offset = 0 } = input ?? {}
       //order count
-      const [userOrders, orderCount] = await Promise.all([
+      const [userOrders, totalOrders] = await Promise.all([
         ctx.db.select().from(orders).where(eq(orders.user_id, userId)).orderBy(desc(orders.created_at)).limit(limit).offset(offset),
         ctx.db.select({count:count()}).from(orders).where(eq(orders.user_id, userId)).limit(1).offset(0)
       ])
@@ -51,6 +51,7 @@ export const usersRouter = j.router({
           };
         })
       );
+      const orderCount = totalOrders[0]?.count ?? 0
 
       return c.superjson({  
         ordersWithItems,
