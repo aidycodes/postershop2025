@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import dayjs from 'dayjs';
 import { QueryClient } from '@tanstack/react-query';
@@ -28,7 +28,6 @@ interface Order {
 const OrderTable = () => {
     const [expandedOrders, setExpandedOrders] = useState(new Set());
     const [page, setPage] = useState(1);
-    const queryClient = new QueryClient()
     const { data, isLoading } = useQuery({
         queryKey: ['orders', page],
         queryFn: async() => {
@@ -39,6 +38,8 @@ const OrderTable = () => {
         return res.json()
     },
     })
+    if(!data) return null
+    
     const handlePageChange = (newPage: number) => {
         if(!data?.orderCount) return
         if (newPage >= 1 && newPage <= Math.ceil(data?.orderCount?.[0]?.count / 10)) {
@@ -46,10 +47,7 @@ const OrderTable = () => {
         }
     }
 
-    useEffect(() => {
-    queryClient.invalidateQueries({queryKey: ['cart']})
-    queryClient.invalidateQueries({queryKey: ['orders']})
-    },[data])
+    
 
     const toggleOrder = (orderId: string) => {
         setExpandedOrders(prev => {

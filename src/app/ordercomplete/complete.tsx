@@ -4,8 +4,12 @@ import { client} from '@/lib/client'
 import { useQuery } from "@tanstack/react-query";
 import { CircleCheck } from "lucide-react";
 import OrderLoading from "./orderloading";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
 
 const Complete = () => {
+    const queryClient = useQueryClient()
     const searchParams = useSearchParams();
     const stripeOrderId = searchParams.get('success');
     const { data: order, isLoading } = useQuery({
@@ -23,6 +27,11 @@ const Complete = () => {
         refetchOnWindowFocus: false,
         
       });
+
+      useEffect(() => {
+        queryClient.invalidateQueries({queryKey: ['cart']})
+        queryClient.invalidateQueries({queryKey: ['orders']})
+        },[order])
 
     if(isLoading) return <OrderLoading />
     return (
