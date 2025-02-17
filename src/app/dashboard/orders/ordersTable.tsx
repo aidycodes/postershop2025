@@ -40,7 +40,7 @@ const OrderTable = () => {
     },
     })
     const handlePageChange = (newPage: number) => {
-        if (newPage >= 1 && newPage <= Math.ceil(data?.orderCount[0].count / 10)) {
+        if (newPage >= 1 && newPage <= Math.ceil(data?.orderCount?.[0]?.count / 10)) {
             setPage(newPage);
         }
     }
