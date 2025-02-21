@@ -24,7 +24,7 @@ const NavCart = ({ isSignedIn }: NavCartProps) => {
      
        
     });
-console.log(data, 'data')
+
     const cart = data?.cart;
     const items = data?.items;
     

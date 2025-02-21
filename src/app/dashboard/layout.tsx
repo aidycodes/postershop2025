@@ -1,7 +1,13 @@
 import UserSidebar from "./user-sidebar";
-import { useRef, useEffect } from "react";
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Poster Hub - Dashboard",
+  description: "Poster Hub is a platform for buying posters",
+  icons: [{ rel: "icon", url: "/favicon.webp" }],
+}
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
+  
 
   return (
     <div className="flex h-min-screen bg-gray-100 overflow-hidden relative">

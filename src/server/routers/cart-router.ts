@@ -1,7 +1,6 @@
 import { cart } from "@/server/db/schema"
-import { desc } from "drizzle-orm"
 import { z } from "zod"
-import { j, publicProcedure, protectedProcedure } from "../jstack"
+import { j, publicProcedure } from "../jstack"
 import { eq, or } from "drizzle-orm"
 import { cartitem } from "@/server/db/schema"
 import { createId } from "@paralleldrive/cuid2"
@@ -13,11 +12,23 @@ import {
     deleteCookie
   } from 'hono/cookie'
 import { auth } from "@/lib/auth"
+import { cookies } from "next/headers"
 
+
+const userSessionSchema = z.object({
+    id: z.string(),
+    email: z.string().email(), 
+    emailVerified: z.boolean(),
+    name: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    image: z.string().nullable(), 
+  }).optional()
 
 export type SelectedOptions = {
     [key: string]: string
 }
+
 export const selectedOptionsSchema = z.record(z.string(), z.unknown()).default({}).optional()
 const cartItemInput = z.object({
 
@@ -57,6 +68,7 @@ export const cartRouter = j.router({
     const { db } = ctx
     const secret = process.env.COOKIE_SECRET as string
     let guestToken = await getSignedCookie(c, secret)
+    console.log(guestToken, 'guestToken')
     const session = await auth.api.getSession({
       headers: c.req.raw.headers
     })
@@ -138,6 +150,7 @@ export const cartRouter = j.router({
                 .leftJoin(cartitem, eq(cart.id, cartitem.cartid))
                 .where(eq(cart.user_id, session.user.id))
                 .groupBy(cart.id)
+               
                 return c.superjson({cart: userCart[0]?.cart, items: userCart[0]?.items})
             
 } 
@@ -377,5 +390,15 @@ updateCartItem: publicProcedure
     
 
     return c.json({message: "Cart item deleted"})
+    }),
+    serverCart: publicProcedure
+    //.input(z.object({id: z.string()}))
+    .query(async ({ ctx, c, input }) => {
+      const { db } = ctx
+      //const { id } = input
+      const cookieStore = await cookies()
+      const myCookies = cookieStore.getAll()
+      console.log(myCookies, 'cookie333')
+      //const userCart = await db.select().from(cart).where(eq(cart.user_id, session.user.id))
     })
 })

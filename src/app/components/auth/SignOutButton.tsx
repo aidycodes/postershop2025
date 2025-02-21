@@ -13,7 +13,7 @@ const SignOutButton = () => {
         router.push('/sign-in')
         }
     }
-    return <button className="bg-blue-500 text-white px-4 py-2 cursor-pointer rounded-md" onClick={() => handleSignOut()}>Sign Out</button>
+    return <button className="bg-blue-500 text-white px-6 py-2 cursor-pointer rounded-md" onClick={() => handleSignOut()}>Sign Out</button>
 }
 
 export default SignOutButton

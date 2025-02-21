@@ -3,8 +3,9 @@ import Stripe from 'stripe';
 import { schema } from '@/server/db/schema'
 import { drizzle } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
-import { orders, orderitem } from '@/server/db/schema'
+import { orders, orderitem, products } from '@/server/db/schema'
 import { createId } from '@paralleldrive/cuid2'
+import { eq } from 'drizzle-orm'
 const sql = neon(process.env.DATABASE_URL!)
 const db = drizzle<typeof schema>(sql)
 
@@ -12,6 +13,11 @@ const db = drizzle<typeof schema>(sql)
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+
+type ProductOptions = {
+    Stock: { [key: string]: number }
+    sizes: { [key: string]: number }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -63,7 +69,9 @@ export async function POST(req: NextRequest) {
         });
        if(order?.[0]?.id){
         const orderItems = await Promise.all(lineItems.data.map(async (item) => {
-            const product = item?.price?.product;
+            const product = item?.price?.product as Stripe.Product
+
+            console.log(JSON.stringify(product?.metadata), 'product000')
             if (product && typeof product !== 'string' && 'images' in product) {
                 const quantity = item?.quantity || 0;
                 const price = item?.price?.unit_amount || 0;
@@ -78,6 +86,25 @@ export async function POST(req: NextRequest) {
                         quantity: Number(quantity),
                         price: price.toString(),
                     });
+                    const productOptions = await db.select().from(products).where(eq(products.id, product.metadata.db as string))
+                    console.log(productOptions?.[0]?.options, 'productOptions')
+                 
+                        const size = product.metadata.size as string;
+                        const options = productOptions?.[0]?.options as ProductOptions
+                     
+                        if(options.Stock){
+                            if(options?.Stock?.[size]){
+                            const optionsObject = {...options, 
+                                Stock:{ 
+                                    ...options?.Stock,
+                                    [size]: options?.Stock?.[size] - quantity
+                                }}
+                        
+                            const updateStock = await db.update(products).set({
+                                options: optionsObject
+                            }).where(eq(products.id, product.metadata.db as string))
+                            }
+                        }
                 }
             }
         }))

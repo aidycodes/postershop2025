@@ -18,7 +18,7 @@ const PosterShopHomepage = async () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Hero title="Transform Your Space" href="/shop" description="Discover our collection of unique posters" buttonText="Shop Now" />
+      <Hero title="Transform Your Space" href="/new-arrivals" description="Discover our collection of unique posters" buttonText="Shop Now" />
       {/* Featured Products */}
       <ProductDisplay products={featuredProductsData.data as Poster[]} title="Featured Products" />
           <Categorys categories={categoriesData.data} />

@@ -185,7 +185,9 @@ export const orderItemRelations = relations(orderitem, ({ one }) => ({
 
 export const cart = pgTable("cart", {
   id: text("id").primaryKey(),
-  user_id: text("userid").references(() => user.id),
+  user_id: text("userid").references(() => user.id, {
+    onDelete: "cascade",
+  }),
   guest_token: text("guest_token"),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),

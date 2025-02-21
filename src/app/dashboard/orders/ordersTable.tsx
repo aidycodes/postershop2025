@@ -27,14 +27,17 @@ interface Order {
 const OrderTable = () => {
     const [expandedOrders, setExpandedOrders] = useState(new Set());
     const [page, setPage] = useState(1);
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, error } = useQuery({
         queryKey: ['orders', page],
         queryFn: async() => {
             const res = await client.users.myOrders.$get({
             limit: 10,
             offset: (page - 1) * 10
         })
-        return await res.json()
+        if(res.status === 200){
+            return await res.json()
+        }
+        throw new Error('Failed to fetch orders')
     },
     })
  
@@ -63,6 +66,7 @@ const OrderTable = () => {
     return (
         
         <div className="w-full">
+            {error && <div className="text-red-500 text-sm text-center mt-4">An error occurred fetching orders, please try again.</div>}
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-100">
                     <tr>

@@ -15,11 +15,14 @@ type SelectedOptions = {
 }
 
 const Cart = () => {
-  const { data, isLoading, isPending: isCartLoading } = useQuery({
+  const { data, isLoading, isPending: isCartLoading, error: cartError } = useQuery({
     queryKey: ['cart'],
     queryFn: async() => {
       const res = await client.cart.getCart.$get()
+      if(res.status === 200){
       return res.json()
+      }
+      throw new Error('Failed to fetch cart')
     }
   })
 
@@ -56,6 +59,8 @@ const Cart = () => {
   const subtotal = items?.reduce((acc, item) => acc + (+item?.price * item?.qty), 0) || 0;
   const shipping = subtotal > 50 ? 0 : 5.99 
   const total = subtotal + shipping 
+
+
   
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 ">
@@ -63,6 +68,7 @@ const Cart = () => {
       
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
         <div className="lg:col-span-8">
+          {cartError && <div className="text-red-500 text-sm text-center mt-4">An error occurred fetching cart, please try again.</div>}
           {items.length === 0 ? (
             <EmptyCart />
           ) : (

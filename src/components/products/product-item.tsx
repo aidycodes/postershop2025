@@ -75,6 +75,7 @@ const ProductItem = ({poster}: {poster: Poster}) => {
                     className="w-full h-full object-cover transform transition-transform group-hover:scale-105"
                     width={600}
                     height={400}
+                    priority
                 />
                  <div className="absolute top-0 left-0 w-auto h-auto flex items-start justify-start p-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300">
                     <ProductStock stock={handleOptionsOutOfStock(selectedSize[0])} />

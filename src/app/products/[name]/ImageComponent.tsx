@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ZoomIn } from "lucide-react";
+import Image from "next/image";
 
 const ImageComponent = ({image}: {image: string}) => {
 
@@ -51,11 +52,14 @@ const ImageComponent = ({image}: {image: string}) => {
             transform: `scale(${isZoomed ? 1.5 : 1}) translate(${panPosition.x}px, ${panPosition.y}px)`,
             transition: isZoomed ? 'none' : 'all 0.3s ease-out',
           }}>
-       <img 
+       <Image 
          src={image} 
-         alt="Death Note Poster" 
+         alt="poster" 
          className="object-cover w-full h-full select-none"
          draggable="false"
+         width={600}
+         height={400}
+         priority
        />
      </div>
      {!isZoomed ? (

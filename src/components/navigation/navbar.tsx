@@ -31,11 +31,8 @@ const Navbar = ({categories, session}: NavbarProps) => {
               <NavSearch />
               <NavCart isSignedIn={false} />
               <NavUser isSignedIn={session ? true : false} name={session?.name || "User"} />
-              {
-                session && (
                <SignOut />
-              )
-              }
+            
             </div>
           </div>
         </div>

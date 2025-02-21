@@ -21,11 +21,14 @@ const SearchArea = ({ onClose, isOpen }: SearchAreaProps) => {
 
     const debouncedSearchQuery = useDebounce(searchQuery, 500)
 
-    const { data: searchResults, isLoading } = useQuery({
+    const { data: searchResults, isLoading, error } = useQuery({
       queryKey: ["search", debouncedSearchQuery],
       queryFn: async() => {
           const res = await client.products.searchProducts.$get({query:debouncedSearchQuery, limit:10})     
-          return await res.json()
+          if(res.status === 200){
+            return await res.json()
+          }
+          throw new Error('Failed to fetch search results')
         },
         enabled: !!debouncedSearchQuery
     })
@@ -49,7 +52,7 @@ const SearchArea = ({ onClose, isOpen }: SearchAreaProps) => {
         <div className="flex flex-col h-full">
           {/* Search header */}
           <div className="flex items-center p-4 border-b">
-            
+       
             <input
               autoFocus
               className="flex-1 text-lg outline-none"
@@ -64,7 +67,7 @@ const SearchArea = ({ onClose, isOpen }: SearchAreaProps) => {
 
           {/* Results area */}
           <div className="flex-1 overflow-auto p-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100">
-
+          {error && <div className="text-red-500 text-sm text-center mt-4">An error occurred fetching search results, please try again.</div>}
               <div className="space-y-4">
                 <div className="px-4 pb-4">
           {isLoading ? (
@@ -78,6 +81,7 @@ const SearchArea = ({ onClose, isOpen }: SearchAreaProps) => {
             </div>
           ) : (     
                 <div className="space-y-2">
+                      
                     {searchResults?.length === 0 && searchQuery ? (
                         <div className="flex justify-center py-8">
                             <p className="text-gray-500">No results found</p>
@@ -111,6 +115,7 @@ const SearchArea = ({ onClose, isOpen }: SearchAreaProps) => {
         </div>
 
         <div className="px-4 pb-4">
+          {error && <div className="text-red-500 text-sm text-center mt-4">An error occurred fetching search results, please try again.</div>}
           {isLoading ? (
             <div className="flex flex-col justify-center py-8 ">
               <SearchItemSkeleton />

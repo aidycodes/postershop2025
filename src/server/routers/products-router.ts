@@ -103,7 +103,7 @@ export const productsRouter = j.router({
     getFeaturedProducts: publicProcedure.query(async ({ c, ctx }) => {
       const { db } = ctx
       const featuredProducts = await db.select().from(products).where(eq(products.isFeatured, true))
-      console.log(featuredProducts, 'ddd')
+      
       return c.json({
         data: featuredProducts
     })

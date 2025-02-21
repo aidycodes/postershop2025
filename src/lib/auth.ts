@@ -5,7 +5,7 @@ import { drizzle } from "drizzle-orm/neon-http"
 import { schema } from "@/server/db/schema"
 
 const sql = neon(process.env.DATABASE_URL as string)
-const db = drizzle(sql, { schema  })
+export const db = drizzle(sql, { schema  })
 
 
 
@@ -22,8 +22,10 @@ export const auth = betterAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
         }
     },
+    user:{
     deleteUser:{
         enabled: true,
+    }
     }
 });
 

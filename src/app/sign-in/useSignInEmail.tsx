@@ -1,9 +1,11 @@
 import { authClient } from "@/lib/auth-client"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
+import { useQueryClient } from "@tanstack/react-query"
 
 const useSignInEmail = () => {
     const router = useRouter()
+    const queryClient = useQueryClient()
     const {mutate: signIn,
         isPending: isSignInPending,
          isError: isSignInError,
@@ -24,6 +26,7 @@ const useSignInEmail = () => {
          console.log(error)
        },
        onSuccess: (data) => {
+        queryClient.invalidateQueries({queryKey: ["user"]})
         router.push('/')
        }
 
