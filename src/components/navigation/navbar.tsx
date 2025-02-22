@@ -20,8 +20,10 @@ interface NavbarProps {
 
 const Navbar = async({categories, session}: NavbarProps) => {
 
+  const originalHeaders = await headers();
+  const headersList = new Headers(originalHeaders);
 const cartData = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}api/v1/events/cart`, {
-  headers: await headers(),
+  headers: headersList,
   credentials: 'include'
 })
 
