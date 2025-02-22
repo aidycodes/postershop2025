@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.webp" }],
 }
 
+export const dynamic = 'force-dynamic'
+
 export interface UserSession {
   id: string;
   email: string;
