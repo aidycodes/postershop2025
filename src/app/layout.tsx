@@ -34,7 +34,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
- 
+  const headersList = await headers()
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -49,14 +49,15 @@ export default async function RootLayout({
   const categories = await client.products.getCategorys.$get()
   const categoriesData: {data: Category[]} = await categories.json() 
   const session = await auth.api.getSession({
-    headers: await headers()
+    headers: headersList
   })
+
 
  
   await queryClient.prefetchQuery({
     queryKey: ['cart'],
     queryFn: async() => fetch('https://postershop2025.vercel.app/api/v1/events/cart', {
-      headers: await headers(),
+      headers: headersList,
       credentials: 'include'
     }).then(res => res.json())
   })
@@ -65,7 +66,7 @@ export default async function RootLayout({
     queryKey: ['user'],
     queryFn: async() => {
       const res = await fetch('https://postershop2025.vercel.app/api/v1/events/user', {
-      headers: await headers(),
+      headers: headersList,
       credentials: 'include'
     })
     const user: {user: User} = await res.json()
