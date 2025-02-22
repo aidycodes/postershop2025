@@ -43,7 +43,8 @@ export default async function RootLayout({
   await queryClient.prefetchQuery({
     queryKey: ['cart'],
     queryFn: async() => fetch('https://postershop2025.vercel.app/api/v1/events/cart', {
-      headers: await headers()
+      headers: await headers(),
+      credentials: 'include'
     }).then(res => res.json())
   })
 
@@ -51,7 +52,8 @@ export default async function RootLayout({
     queryKey: ['user'],
     queryFn: async() => {
       const res = await fetch('https://postershop2025.vercel.app/api/v1/events/user', {
-      headers: await headers()
+      headers: await headers(),
+      credentials: 'include'
     })
     const user: {user: User} = await res.json()
     if(user){
