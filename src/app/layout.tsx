@@ -58,42 +58,42 @@ export default async function RootLayout({
 
 
  
-  await queryClient.prefetchQuery({
-    queryKey: ['cart'],
-    queryFn: async() => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
-      headers: headersList,
-      credentials: 'include'
-    })
-    return res.json()
-  }
-  })
+  // await queryClient.prefetchQuery({
+  //   queryKey: ['cart'],
+  //   queryFn: async() => {
+  //     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
+  //     headers: headersList,
+  //     credentials: 'include'
+  //   })
+  //   return res.json()
+  // }
+  // })
 
-  await queryClient.prefetchQuery({
-    queryKey: ['user'],
-    queryFn: async() => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/user`, {
-      headers: headersList,
-      credentials: 'include'
-    })
-    const user: {user: User} = await res.json()
-    console.log(user)
-    if(user){
-    return user.user
-    }
-    {
-      return {
-        name: "",
-        email: "",
-        phone: "",
-        city: "",
-        country: "",
-        postal_code: "",
-        address: "",
-      }
-    }
-  }
-  })
+  // await queryClient.prefetchQuery({
+  //   queryKey: ['user'],
+  //   queryFn: async() => {
+  //     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/user`, {
+  //     headers: headersList,
+  //     credentials: 'include'
+  //   })
+  //   const user: {user: User} = await res.json()
+  //   console.log(user)
+  //   if(user){
+  //   return user.user
+  //   }
+  //   {
+  //     return {
+  //       name: "",
+  //       email: "",
+  //       phone: "",
+  //       city: "",
+  //       country: "",
+  //       postal_code: "",
+  //       address: "",
+  //     }
+  //   }
+  // }
+  // })
   
 
   return (
@@ -101,13 +101,13 @@ export default async function RootLayout({
       <body className="antialiased">
 
         <Providers>
-          <HydrationBoundary state={dehydrate(queryClient)}>
+         
           <PromotionBanner promotion="Save now up to 20% off for new customers with code: " showPromotion={true} code="NEW20" />
           <Navbar categories={categoriesData.data} session={session?.user as UserSession | null} />
             {children}
           <Footer blurb="Curating beautiful posters for your space since 2024."
           storeName="Poster Shop" infoPages={["Shipping", "Returns", "FAQ", "Contact Us"]} />
-          </HydrationBoundary>
+          
         </Providers>
       </body>
     </html>

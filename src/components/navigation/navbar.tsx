@@ -9,7 +9,7 @@ import type { UserSession } from "@/app/layout"
 import { headers } from "next/headers"
 import SignOut from "./buttons/sign-out"
 import { z } from "zod"
-
+import { CartData } from "./buttons/nav-cart"
 
 
 
@@ -22,10 +22,11 @@ const Navbar = async({categories, session}: NavbarProps) => {
 
   const originalHeaders = await headers();
   const headersList = new Headers(originalHeaders);
-const cartData = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}api/v1/events/cart`, {
+const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}api/v1/events/cart`, {
   headers: headersList,
   credentials: 'include'
 })
+const cartData: CartData = await res.json()
 
     return (
         <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -38,7 +39,7 @@ const cartData = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}api/v1/events/ca
             <NavLinks categories={categories} />
             <div className="flex items-center space-x-4">
               <NavSearch />
-              <NavCart isSignedIn={false}  />
+              <NavCart isSignedIn={false} cart={cartData} />
               <NavUser isSignedIn={session ? true : false} name={session?.name || "User"} />
                <SignOut />
             
