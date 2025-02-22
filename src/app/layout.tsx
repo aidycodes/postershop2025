@@ -18,6 +18,8 @@ export const metadata: Metadata = {
 }
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
 export interface UserSession {
   id: string;
@@ -53,11 +55,22 @@ export default async function RootLayout({
   })
 
 
+    const cartResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
+      headers: headersList,
+      credentials: 'include'
+    });
+    console.log('Cart API Status:', cartResponse.status);
+    const cartData = await cartResponse.json();
+    console.log('Cart Data:', cartData);
+
+  
+
+
  
   await queryClient.prefetchQuery({
     queryKey: ['cart'],
     queryFn: async() => {
-      const res = await fetch('/api/v1/events/cart', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
       headers: headersList,
       credentials: 'include'
     })
@@ -68,11 +81,12 @@ export default async function RootLayout({
   await queryClient.prefetchQuery({
     queryKey: ['user'],
     queryFn: async() => {
-      const res = await fetch('/api/v1/events/user', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/user`, {
       headers: headersList,
       credentials: 'include'
     })
     const user: {user: User} = await res.json()
+    console.log(user)
     if(user){
     return user.user
     }
