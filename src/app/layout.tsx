@@ -54,15 +54,6 @@ export default async function RootLayout({
     headers: headersList
   })
 
-
-    const cartResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
-      headers: headersList,
-      credentials: 'include'
-    });
-    console.log('Cart API Status:', cartResponse.status);
-    const cartData = await cartResponse.json();
-    console.log('Cart Data:', cartData);
-
   
 
 
