@@ -11,18 +11,12 @@ import { CartItemType } from "@/server/routers/cart-router"
 
 
 export async function GET(req: NextRequest) {
-  console.log('cart route')
-
             const cookieStore = await cookies()
             const guestCartID = cookieStore.get('guestCartID')
             console.log(guestCartID, 'guestCartID')
-            console.log(cookieStore, 'cookieStore')
-            console.log(req, 'req')
-
             const session = await auth.api.getSession({
                 headers: await headers()
               })
-            console.log(session, 'session')
             if(session?.user){
                 const userCart = await db
                 .select({
@@ -33,7 +27,6 @@ export async function GET(req: NextRequest) {
                 .leftJoin(cartitem, eq(cart.id, cartitem.cartid))
                 .where(eq(cart.user_id, session.user.id))
                 .groupBy(cart.id)
-                console.log(userCart, 'userCart')
                 return NextResponse.json({cart: userCart[0]?.cart || {id:123}, items: userCart[0]?.items || []})
             }
             if(guestCartID){
@@ -49,15 +42,12 @@ export async function GET(req: NextRequest) {
                 .where(eq(cart.guest_token, quest_token))
                 .groupBy(cart.id)
                 if(userCart.length > 0){
-                  console.log('guestcart', userCart)
                     return NextResponse.json({cart: userCart[0]?.cart || {id:123}, items: userCart[0]?.items || []})
                 }
-                console.log('no cart')
                 return NextResponse.json({cart: {id:123}, items: []})
 
               
             }
-            console.log('no session')
             return NextResponse.json({cart: {id:123}, items: [{cartid:123, productid:123, quantity:1, price:123},
                {cartid:123, productid:123, quantity:1, price:123}, 
                {cartid:123, productid:123, quantity:1, price:123}, 
