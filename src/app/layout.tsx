@@ -26,12 +26,23 @@ export interface UserSession {
   updatedAt: Date;
   image: string | null;
 }
-const queryClient = new QueryClient()
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+ 
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000, // 1 minute
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+      },
+    },
+  })
+
 
   const categories = await client.products.getCategorys.$get()
   const categoriesData: {data: Category[]} = await categories.json() 
