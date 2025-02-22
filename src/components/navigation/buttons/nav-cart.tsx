@@ -3,34 +3,14 @@ import { ShoppingCart } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { client } from "@/lib/client"
-import { CartItemType } from "@/server/routers/cart-router"
+
 
 interface NavCartProps {
     isSignedIn: boolean;
-    cart: {
-        cart?: {
-            id: string;
-            user_id: string | null;
-            guest_token: string | null;
-            created_at: Date | null;
-            updated_at: Date | null;
-        };
-        items?: CartItemType[];
-    };
+
 }
 
-export type CartData = {
-    cart: {
-        id: string;
-        user_id: string | null;
-        guest_token: string | null;
-        created_at: Date | null;
-        updated_at: Date | null;
-    } | undefined;
-    items: CartItemType[] | undefined;
-}
-
-const NavCart = ({ isSignedIn, cart }: NavCartProps) => {
+const NavCart = ({ isSignedIn }: NavCartProps) => {
 
    
     const { data } = useQuery({
@@ -45,13 +25,12 @@ const NavCart = ({ isSignedIn, cart }: NavCartProps) => {
             
             return res.json();
         },
-        initialData: {
-            cart: cart.cart,
-            items: cart.items
-        }
+   
+     
+       
     });
 
-    const cartData = data?.cart;
+    const cart = data?.cart;
     const items = data?.items;
     
 

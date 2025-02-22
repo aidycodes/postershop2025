@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next"
 import { Providers } from "./components/providers"
 import Footer from "@/components/footer/footer"
@@ -8,10 +7,10 @@ import type { Category } from "@/components/categorys/categorys"
 import { client } from "@/lib/client"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
-import { HydrationBoundary, QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
 import { User } from "@/app/dashboard/user/user-form"
 import "./globals.css"
-import { CartData } from "@/components/navigation/buttons/nav-cart"
+
 export const metadata: Metadata = {
   title: "Poster Hub",
   description: "Poster Hub is a platform for buying posters",
@@ -37,12 +36,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-
-  const initalCart = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
-    headers: await headers(),
-    credentials: 'include'
-  })
-
+  const headersList = await headers()
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -57,51 +51,49 @@ export default async function RootLayout({
   const categories = await client.products.getCategorys.$get()
   const categoriesData: {data: Category[]} = await categories.json() 
   const session = await auth.api.getSession({
-    headers: await headers()
+    headers: headersList
   })
 
-
-  const initalCartData = await initalCart.json()
-  console.log(initalCartData, 'initalCartData')
+  
 
 
+ 
+  await queryClient.prefetchQuery({
+    queryKey: ['cart'],
+    queryFn: async() => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
+      headers: headersList,
+      credentials: 'include'
+    })
+    return res.json()
+  }
+  })
 
-  // await queryClient.prefetchQuery({
-  //   queryKey: ['cart'],
-  //   queryFn: async() => {
-  //     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
-  //     headers: headersList,
-  //     credentials: 'include'
-  //   })
-  //   return res.json()
-  // }
-  // })
-
-  // await queryClient.prefetchQuery({
-  //   queryKey: ['user'],
-  //   queryFn: async() => {
-  //     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/user`, {
-  //     headers: headersList,
-  //     credentials: 'include'
-  //   })
-  //   const user: {user: User} = await res.json()
-  //   console.log(user)
-  //   if(user){
-  //   return user.user
-  //   }
-  //   {
-  //     return {
-  //       name: "",
-  //       email: "",
-  //       phone: "",
-  //       city: "",
-  //       country: "",
-  //       postal_code: "",
-  //       address: "",
-  //     }
-  //   }
-  // }
-  // })
+  await queryClient.prefetchQuery({
+    queryKey: ['user'],
+    queryFn: async() => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/user`, {
+      headers: headersList,
+      credentials: 'include'
+    })
+    const user: {user: User} = await res.json()
+    console.log(user)
+    if(user){
+    return user.user
+    }
+    {
+      return {
+        name: "",
+        email: "",
+        phone: "",
+        city: "",
+        country: "",
+        postal_code: "",
+        address: "",
+      }
+    }
+  }
+  })
   
 
   return (
@@ -109,13 +101,13 @@ export default async function RootLayout({
       <body className="antialiased">
 
         <Providers>
-        
+          <HydrationBoundary state={dehydrate(queryClient)}>
           <PromotionBanner promotion="Save now up to 20% off for new customers with code: " showPromotion={true} code="NEW20" />
-          <Navbar cart={initalCartData as CartData} categories={categoriesData.data} session={session?.user as UserSession | null} />
+          <Navbar categories={categoriesData.data} session={session?.user as UserSession | null} />
             {children}
           <Footer blurb="Curating beautiful posters for your space since 2024."
           storeName="Poster Shop" infoPages={["Shipping", "Returns", "FAQ", "Contact Us"]} />
-    
+          </HydrationBoundary>
         </Providers>
       </body>
     </html>
