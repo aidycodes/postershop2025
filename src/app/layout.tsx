@@ -55,6 +55,7 @@ export default async function RootLayout({
       headers: await headers()
     })
     const user: {user: User} = await res.json()
+    console.log(user)
     if(user){
     return user.user
     }
