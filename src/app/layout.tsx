@@ -37,7 +37,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const headersList = await headers()
+
+  const initalCart = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
+    headers: await headers(),
+    credentials: 'include'
+  })
+
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -52,13 +57,10 @@ export default async function RootLayout({
   const categories = await client.products.getCategorys.$get()
   const categoriesData: {data: Category[]} = await categories.json() 
   const session = await auth.api.getSession({
-    headers: headersList
+    headers: await headers()
   })
 
-  const initalCart = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
-    headers: headersList,
-    credentials: 'include'
-  })
+
   const initalCartData = await initalCart.json()
   console.log(initalCartData, 'initalCartData')
 
