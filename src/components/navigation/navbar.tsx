@@ -6,17 +6,21 @@ import NavLinks from "./nav-links"
 import ShopName from "./buttons/shop-name"
 import type { Category } from "@/components/categorys/categorys"
 import type { UserSession } from "@/app/layout"
-
+import { headers } from "next/headers"
 import SignOut from "./buttons/sign-out"
+import { z } from "zod"
+
+
+
+
 interface NavbarProps {
   categories: Category[];
   session?: UserSession | null; // Make it optional and allow null
 }
 
+const Navbar = async({categories, session}: NavbarProps) => {
 
-const Navbar = ({categories, session}: NavbarProps) => {
 
-  
 
     return (
         <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -29,7 +33,7 @@ const Navbar = ({categories, session}: NavbarProps) => {
             <NavLinks categories={categories} />
             <div className="flex items-center space-x-4">
               <NavSearch />
-              <NavCart isSignedIn={false} />
+              <NavCart isSignedIn={false}  />
               <NavUser isSignedIn={session ? true : false} name={session?.name || "User"} />
                <SignOut />
             

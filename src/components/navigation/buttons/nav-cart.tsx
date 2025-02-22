@@ -4,11 +4,15 @@ import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { client } from "@/lib/client"
 
+
 interface NavCartProps {
     isSignedIn: boolean;
+
 }
 
 const NavCart = ({ isSignedIn }: NavCartProps) => {
+
+   
     const { data } = useQuery({
         queryKey: ['cart'],
         queryFn: async () => {
@@ -21,6 +25,7 @@ const NavCart = ({ isSignedIn }: NavCartProps) => {
             
             return res.json();
         },
+   
      
        
     });
