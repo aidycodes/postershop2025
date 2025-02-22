@@ -20,7 +20,10 @@ interface NavbarProps {
 
 const Navbar = async({categories, session}: NavbarProps) => {
 
-
+const cartData = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
+  headers: await headers(),
+  credentials: 'include'
+})
 
     return (
         <nav className="bg-white shadow-sm sticky top-0 z-50">
