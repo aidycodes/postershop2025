@@ -25,6 +25,7 @@ export const auth = betterAuth({
     user:{
     deleteUser:{
         enabled: true,
+        callBackUrl: process.env.BETTER_AUTH_URL as string
     }
     }
 });

@@ -11,9 +11,9 @@ const Page = async () => {
         
     }
     return (
-        <div>
-          <SignOutButton />
+        <div className="flex flex-col items-center h-screen gap-12">
             <h1>Welcome {session.user.name}</h1>
+          <SignOutButton />
         </div>
     )
   }

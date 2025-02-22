@@ -7,7 +7,6 @@ import useSignUpEmail from './useSignUpEmail';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2 } from 'lucide-react';
 
 const schema = z.object({
     email: z.string().email(),
@@ -21,8 +20,8 @@ const SignInUp = () => {
     const [activeTab, setActiveTab] = useState('signin');  
     const [loading, setLoading] = useState(false)
     
-    const {signIn, isSignInPending, isSignInError, signInError} = useSignInEmail()
-    const {signUp, isSignUpPending, isSignUpError, signUpError} = useSignUpEmail()
+    const {signIn, isSignInPending, isSignInError, signInError, SignInLoading} = useSignInEmail()
+    const {signUp, isSignUpPending, isSignUpError, signUpError, SignUpLoading} = useSignUpEmail()
     
     const {register: registerSignIn, handleSubmit: handleSignIn, formState: {errors: errorsSignIn}} = useForm<SignInForm>({
         resolver: zodResolver(schema),
@@ -53,14 +52,15 @@ const SignInUp = () => {
         setLoading(true)
         const result = await authClient.signIn.social({
         provider:'google',
-        callbackURL: '/dashboard'
+        callbackURL: '/dashboard/orders'
     })
-    if(result.error) {
-    
+    if(result.error) { 
         console.log(result.error)
     setLoading(false)
     }
   }
+
+  console.log(SignUpLoading, SignInLoading, isSignInPending, isSignUpPending, isSignInError, isSignUpError, errorsSignIn, errorsSignUp)
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4 ">
@@ -136,11 +136,11 @@ const SignInUp = () => {
                     <div className='h-1 text-red-500'>{isSignInError && signInError?.message} </div>
               <div className="flex flex-col mb-auto pt-4">
                 <button 
-                  type="submit" disabled={isSignInPending || isSignUpPending || isSignUpError || isSignInError}
+                  type="submit" disabled={isSignInPending || isSignUpPending ||  SignInLoading}
                   className={`w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm hover:shadow cursor-pointer
-                     ${isSignInPending || isSignUpPending || !!errorsSignIn?.email?.message || !!errorsSignIn?.password?.message ? 'opacity-50 cursor-default' : ''}`}
+                     ${isSignInPending || isSignUpPending ||  SignInLoading ? 'opacity-50 cursor-default' : ''}`}
                 >
-                  {isSignInPending ? 'Signing in...' : 'Sign In'}
+                  {SignInLoading ? 'Signing in...' : 'Sign In'}
                 </button>
 
   
@@ -213,11 +213,11 @@ const SignInUp = () => {
               <div className='h-1 text-red-500'>{isSignUpError && signUpError?.message} </div>
               <div className="pt-4">
                 <button 
-                  type="submit" disabled={isSignUpPending || isSignInPending ||  !!errorsSignUp.email || !!errorsSignUp.password}
+                  type="submit" disabled={isSignUpPending || isSignInPending ||  SignUpLoading}
                   className={`w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm cursor-pointer hover:shadow
-                     ${isSignUpPending || isSignInPending || !!errorsSignUp.email || !!errorsSignUp.password ? 'opacity-50 cursor-default' : ''}`}
+                     ${isSignUpPending || isSignInPending || SignUpLoading ? 'opacity-50 cursor-default' : ''}`}
                 >
-                  {isSignUpPending ? 'Creating...' : 'Create Account'}
+                  {SignUpLoading ? 'Creating...' : 'Create Account'}
                 </button>
 
                 <button 

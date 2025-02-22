@@ -84,6 +84,14 @@ const OrderTable = () => {
                         <OrderTableSkeleton />
                         <OrderTableSkeleton />
                         <OrderTableSkeleton />
+                        <OrderTableSkeleton />
+                        <OrderTableSkeleton />
+                        <OrderTableSkeleton />
+                        <OrderTableSkeleton />
+                        <OrderTableSkeleton />
+                        <OrderTableSkeleton />
+                        <OrderTableSkeleton />
+                        <OrderTableSkeleton />
                         </>
                     )}
                   
@@ -95,7 +103,7 @@ const OrderTable = () => {
                             >
                                 <td className="p-4 text-sm text-gray-600">{order.id.slice(0, 8)}...</td>
                                 <td className="p-4 text-sm text-gray-600">{dayjs(order.created_at).format('DD-MM-YYYY')}</td>
-                                <td className="p-4 text-sm text-gray-600">£{order.total}</td> 
+                                <td className="p-4 text-sm text-gray-600">£{order.total && (+order.total / 100).toFixed(2)}</td> 
                                 <td className="p-4 text-sm text-gray-600">
                                     {order.postage}
                                 </td>
@@ -128,7 +136,7 @@ const OrderTable = () => {
                                                 <p className="font-semibold">Delivery Address:</p>
                                                 <p className="whitespace-pre-line">{order.deliveryAddress}</p>
                                                 <p className="font-semibold">Postage</p>
-                                                <p className="whitespace-pre-line">{order.postage_cost}</p>
+                                                <p className="whitespace-pre-line">£{order.postage_cost && (+order.postage_cost / 100).toFixed(2)}</p>
                                             </div>
                                             <div className="space-y-2">
                                                 {order.orderItems.map((item) => (
@@ -143,7 +151,7 @@ const OrderTable = () => {
                                                             <p className="text-sm text-gray-500">Product ID: {item.productid}</p>
                                                         </div>
                                                         <div className="text-right">
-                                                            <p className="font-medium text-gray-900">{(item.price)}</p>
+                                                            <p className="font-medium text-gray-900">£{item.price && (+item.price / 100).toFixed(2)}</p>
                                                             <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                                                         </div>
                                                     </div>

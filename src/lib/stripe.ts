@@ -52,7 +52,7 @@ export const createCheckoutSession = async({userEmail, userId, cartItems }: {use
     
     allow_promotion_codes: true,
 
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success={CHECKOUT_SESSION_ID}`,
+    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/ordercomplete?success={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
    
 });

@@ -1,40 +1,37 @@
 'use client'
 import { useState } from "react"
 import { UserSession } from "@/app/layout"
-import { redirect } from "next/navigation"
 import { authClient } from "@/lib/auth-client"
-import { headers } from "next/headers"
 import { useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
 const DeleteComponent = ({session}: {session: UserSession}) => {
 
     const [deleteCheck, setDeleteCheck] = useState('')
     const [error, setError] = useState('')
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const queryClient = useQueryClient()
+    const router = useRouter()
 
     const handleDelete = async() => {
-        return new Promise(async(resolve, reject) => {
-          if (deleteCheck === session.email) {
-            // Perform delete operation
-            const response = await authClient.deleteUser()
-
-            // Type guard to check if response is of the expected type
-            if ('success' in response) {
-                if (response.success) {
-                    resolve('Account deleted successfully');
+          if (deleteCheck === session.email) {    // Perform delete operation
+            try{ 
+                setIsLoading(true);
+                const response = await authClient.deleteUser()
                     setIsOpen(false);
                     queryClient.invalidateQueries({ queryKey: ['cart'] })
-                    redirect('/sign-in')
-                } else {
-                    reject('Failed to delete account');
-                }
-            } else {
-                reject('Unexpected response format');
+                    queryClient.invalidateQueries({ queryKey: ['orders'] })
+                    queryClient.setQueryData(['user'] , null)
+                    router.push('/')
+            } catch (error) {
+                setError('Failed to delete account');
+                setIsLoading(false);
             }
-          } else {
-            reject('Please enter your email to confirm deletion');
-          }
-        });
+            } else {
+                setError('Please enter your email to confirm deletion');
+                setIsLoading(false);
+            }
+        
       };
     
       return (  <div className="w-full">
@@ -44,10 +41,11 @@ const DeleteComponent = ({session}: {session: UserSession}) => {
             Warning: This action is irreversible and will delete your account and all associated data.
           </span>
           <button 
+            disabled={isLoading}
             onClick={() => setIsOpen(true)}
             className="bg-red-500 text-white px-4 py-2 rounded-md w-full cursor-pointer hover:bg-red-600"
           >
-            Delete Account
+           {isLoading ? 'Deleting...' : 'Delete Account'}
           </button>
         </div>
   
@@ -61,7 +59,7 @@ const DeleteComponent = ({session}: {session: UserSession}) => {
                   <h3 className="text-lg font-semibold">Confirm Account Deletion</h3>
                   <button 
                     onClick={() => setIsOpen(false)}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-gray-500 hover:text-gray-700 cursor-pointer"
                   >
                     ✕
                   </button>
@@ -89,11 +87,12 @@ const DeleteComponent = ({session}: {session: UserSession}) => {
                       setIsOpen(false);
                       setError('');
                     }}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
+                    disabled={isLoading}
                     onClick={() => {
                       handleDelete()
                         .then((message) => {
@@ -103,9 +102,9 @@ const DeleteComponent = ({session}: {session: UserSession}) => {
                           setError(errorMessage);
                         });
                     }}
-                    className="flex-1 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                    className="flex-1 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 cursor-pointer"
                   >
-                    Delete Account
+                    {isLoading ? 'Deleting...' : 'Delete Account'}
                   </button>
                 </div>
               </div>
@@ -128,7 +127,7 @@ const DeleteComponent = ({session}: {session: UserSession}) => {
                 value={deleteCheck}
                 onChange={(e) => setDeleteCheck(e.target.value)}
                 placeholder="Enter your email"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 "
               />
               
               <div className="flex flex-col space-y-2">
@@ -142,7 +141,7 @@ const DeleteComponent = ({session}: {session: UserSession}) => {
                         setError(errorMessage);
                       });
                   }}
-                  className="w-full px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                  className="w-full px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 cursor-pointer"
                 >
                   Confirm Deletion
                 </button>
@@ -151,7 +150,7 @@ const DeleteComponent = ({session}: {session: UserSession}) => {
                     setIsOpen(false);
                     setError('');
                   }}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   Cancel
                 </button>

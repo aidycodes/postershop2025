@@ -19,13 +19,13 @@ const SizeCircle = ({label, size, onClick, selected}: {
                 <>
                 <div onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)} 
                  onClick={(e) => size && onClick(e, size)} 
-                 className="w-8 h-8 rounded-full flex items-center justify-center bg-blue-300 relative">
-                    <span className="text-sm font-medium">{label}</span>
+                 className="w-8 h-8 rounded-full flex items-center justify-center bg-blue-300 relative cursor-pointer">
+                    <span className="text-sm font-medium ">{label} </span>
                 </div>
                 {isVisible && (
-          <div className=" absolute bottom-24 left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap">
+          <div className=" absolute hidden lg:block bottom-24 left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap">
             {size?.[0]?.split("(")[1]} 
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+            <div className="absolute  top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
           </div>
         )}
                 </>
@@ -34,14 +34,14 @@ const SizeCircle = ({label, size, onClick, selected}: {
                 <div onMouseEnter={() => setIsVisible(true)} 
                 onMouseLeave={() => setIsVisible(false)} 
                 onClick={(e) => size && onClick(e, size)} 
-                className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-sm font-medium">{label}</span>
+                className="w-8 h-8 cursor-pointer   rounded-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-sm font-medium">{label} </span>
                 </div>
                 {isVisible && (
 
-          <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap">
-          {size?.[0]?.split("(")[1]} 
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+          <div className="absolute hidden cursor-pointer lg:block bottom-24 left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap">
+          {size?.[0]?.split("(")[1]}  
+            <div className="absolute hidden cursor-pointer lg:block top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
           </div>
         )}
                 </>

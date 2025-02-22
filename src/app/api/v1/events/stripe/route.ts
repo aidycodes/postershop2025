@@ -6,18 +6,40 @@ import { neon } from '@neondatabase/serverless'
 import { orders, orderitem, products } from '@/server/db/schema'
 import { createId } from '@paralleldrive/cuid2'
 import { eq } from 'drizzle-orm'
-const sql = neon(process.env.DATABASE_URL!)
+import { z } from 'zod';
+
+const sql = neon(process.env.DATABASE_URL!) //connect to db
 const db = drizzle<typeof schema>(sql)
 
-// Initialize Stripe with your secret key
+const StockSchema = z.object({ 
+    Small: z.number(),
+    Medium: z.number(),
+    Large: z.number(),
+    XLarge: z.number(),
+  });
+
+ const StripeIdsSchema = z.object({
+    Small: z.string(),
+    Medium: z.string(),
+    Large: z.string(),
+    XLarge: z.string(),
+  });
+  const SizeSchema = z.object({
+    'Large (A1 - 23.4" × 33" / 594 × 827 mm)': z.number(),
+    'Medium (A2 - 16.5" × 23.4" / 420 × 594 mm)': z.number(),
+    'Small (A3 - 11.7" × 16.5" / 297 × 420 mm)': z.number(),
+    'XLarge (A0 - 33" × 46.8" / 827 × 1169 mm)': z.number(),
+  });
+  
+  const jsonbSchema = z.object({
+    sizes: SizeSchema,
+    stripeIds: StripeIdsSchema,
+    Stock: StockSchema,
+  });
+
+  
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-
-type ProductOptions = {
-    Stock: { [key: string]: number }
-    sizes: { [key: string]: number }
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,17 +63,17 @@ export async function POST(req: NextRequest) {
     
  if(session.customer_details?.address){
     
-     const addressKeysOrder = ['line1', 'line2', 'city', 'state', 'postal_code', 'country']; // Define your known keys in the desired order
+     const addressKeysOrder = ['line1', 'line2', 'city', 'state', 'postal_code', 'country']; //parse address based on order
      const addressEntries = Object.entries(session.customer_details.address);
      const sortedAddressEntries = addressKeysOrder
-         .map(key => addressEntries.find(([k]) => k === key)) 
+         .map(key => addressEntries.find(([k]) => k === key))  //map address to order
          .filter(entry => entry !== undefined); 
      const sortedAddress = sortedAddressEntries
          .map(([_, value]) => value)
          .join(', ');
 
-         if(session.metadata?.userId){
-            console.log('✅ User ID found in metadata');
+         if(session.metadata?.userId){ //create order if user is logged in
+            console.log('✅ User ID found in metadata'); 
             const order = await db.insert(orders).values({
                 id: createId(),
                 stripe_id: session.id,
@@ -68,10 +90,9 @@ export async function POST(req: NextRequest) {
           expand: ['data.price.product']
         });
        if(order?.[0]?.id){
-        const orderItems = await Promise.all(lineItems.data.map(async (item) => {
+        const orderItems = await Promise.all(lineItems.data.map(async (item) => { //create order items
             const product = item?.price?.product as Stripe.Product
 
-            console.log(JSON.stringify(product?.metadata), 'product000')
             if (product && typeof product !== 'string' && 'images' in product) {
                 const quantity = item?.quantity || 0;
                 const price = item?.price?.unit_amount || 0;
@@ -86,26 +107,26 @@ export async function POST(req: NextRequest) {
                         quantity: Number(quantity),
                         price: price.toString(),
                     });
-                    const productOptions = await db.select().from(products).where(eq(products.id, product.metadata.db as string))
-                    console.log(productOptions?.[0]?.options, 'productOptions')
-                 
-                        const size = product.metadata.size as string;
-                        const options = productOptions?.[0]?.options as ProductOptions
-                     
-                        if(options.Stock){
-                            if(options?.Stock?.[size]){
-                            const optionsObject = {...options, 
+                    const productOptions = await db.select().from(products)
+                                            .where(eq(products.id, product.metadata.db as string))    //get product for options 
+                        if(productOptions[0]) {   
+                        const options = productOptions?.[0]?.options  // get options
+                        const parsedOptions = jsonbSchema.parse(options); //check if options are valid
+                           if(parsedOptions){
+                            const size = product.metadata.size as keyof typeof parsedOptions.Stock; //get size
+                            const optionsObject = {...parsedOptions, 
                                 Stock:{ 
-                                    ...options?.Stock,
-                                    [size]: options?.Stock?.[size] - quantity
+                                    ...parsedOptions?.Stock,
+                                    [size]: parsedOptions?.Stock?.[size] - quantity //stock object
                                 }}
                         
                             const updateStock = await db.update(products).set({
                                 options: optionsObject
-                            }).where(eq(products.id, product.metadata.db as string))
+                            }).where(eq(products.id, product.metadata.db as string)) //update stock
                             }
-                        }
+                        }        
                 }
+                
             }
         }))
     }
@@ -144,6 +165,24 @@ export async function POST(req: NextRequest) {
                                 quantity: Number(quantity),
                                 price: price.toString(),
                             });
+                            const productOptions = await db.select().from(products)
+                                            .where(eq(products.id, product.metadata.db as string))    //get product for options 
+                        if(productOptions[0]) {   
+                        const options = productOptions?.[0]?.options  // get options
+                        const parsedOptions = jsonbSchema.parse(options); //check if options are valid
+                           if(parsedOptions){
+                            const size = product.metadata.size as keyof typeof parsedOptions.Stock; //get size
+                            const optionsObject = {...parsedOptions, 
+                                Stock:{ 
+                                    ...parsedOptions?.Stock,
+                                    [size]: parsedOptions?.Stock?.[size] - quantity //stock object
+                                }}
+                        
+                            const updateStock = await db.update(products).set({
+                                options: optionsObject
+                            }).where(eq(products.id, product.metadata.db as string)) //update stock
+                            }
+                        }
                         }
                     }
                 }))

@@ -98,11 +98,16 @@ const ProductItem = ({poster}: {poster: Poster}) => {
             </Link>
             {/* Mobile button - hidden on lg screens */}
              <div className="order-3 lg:hidden">
-                <div className="flex mt-2 items-center">
+                <div className="flex mt-2 justify-between items-center gap-2">
              <SizeSelector selectedSize={selectedSize[0]} setSelectedSize={handleSizeChange} sizes={sizes} />
-
+             <div className="pt-2">
+             <ProductStock stock={handleOptionsOutOfStock(selectedSize[0])} />
              </div>
-                <button onClick={(e) => addToCart(e)} className="w-full py-2 mt-2 bg-white text-gray-900 rounded-md border border-gray-200 hover:bg-gray-50 transition-colors">
+             <div className="text-lg font-semibold">
+                £{selectedSize[1]}
+             </div>
+             </div>
+                <button onClick={(e) => addToCart(e)} className="w-full cursor-pointer py-2 mt-2 bg-white text-gray-900 rounded-md border border-gray-200 hover:bg-gray-50 transition-colors">
                     Add to Cart
                 </button>
             </div>

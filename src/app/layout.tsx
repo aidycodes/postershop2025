@@ -40,10 +40,10 @@ export default async function RootLayout({
   })
 
 
-  const queryClient = new QueryClient()
+ 
   await queryClient.prefetchQuery({
     queryKey: ['cart'],
-    queryFn: async() => fetch('http://localhost:3000/api/v1/events/cart', {
+    queryFn: async() => fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/cart`, {
       headers: await headers()
     }).then(res => res.json())
   })
@@ -51,7 +51,7 @@ export default async function RootLayout({
   await queryClient.prefetchQuery({
     queryKey: ['user'],
     queryFn: async() => {
-      const res = await fetch('http://localhost:3000/api/v1/events/user', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/user`, {
       headers: await headers()
     })
     const user: {user: User} = await res.json()

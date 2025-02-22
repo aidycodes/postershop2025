@@ -102,7 +102,7 @@ const Cart = () => {
             <button 
             onClick={() => createCheckoutSession()}
               disabled={items.length === 0 || isPending}
-              className={`w-full mt-8 py-2 text-lg text-white rounded-md transition-colors  ${
+              className={`w-full mt-8 py-2 text-lg text-white rounded-md transition-colors cursor-pointer  ${
                 items.length === 0 || isPending
                   ? 'bg-gray-400 cursor-not-allowed' 
                   : 'bg-blue-500 hover:bg-blue-600'

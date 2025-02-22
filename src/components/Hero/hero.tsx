@@ -17,9 +17,9 @@ interface HeroProps {
 }
 
 const heroImages: heroImages = [
-    '/categorys/scifi.webp',
     '/categorys/Fantasy.jpg',
     '/categorys/Kids.jpg',
+    '/categorys/saway.jpg',
   
 ]
 
