@@ -27,12 +27,13 @@ const SignOut = () => {
       startTransition(async () => {
           await authClient.signOut()
           queryClient.setQueryData(['user'] , null)
+          queryClient.setQueryData(['cart'] , {cart: {id:123}, items: []})
           setIsLoading(false)
           router.push('/')
       })
   }
 
-    if(!user) return null
+    if(!user.id) return null
 
  return(
     <button disabled={isLoading} aria-label="Sign Out" title="Sign Out" className="p-2 group cursor-pointer rounded-full hover:bg-gray-100" onClick={() => signOut()}>
