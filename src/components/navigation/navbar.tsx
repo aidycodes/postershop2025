@@ -26,6 +26,7 @@ const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}api/v1/events/cart`, 
   headers: headersList,
   credentials: 'include'
 })
+console.log(res, 'res')
 const cartData: CartData = await res.json()
 
     return (
