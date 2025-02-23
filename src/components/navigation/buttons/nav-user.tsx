@@ -23,7 +23,7 @@ const NavUser = ({ currentUser,  session }: NavUserProps) => {
             return res.json()
         },
         initialData: {
-            id: currentUser?.user?.id || "",
+            id: session?.id || "",
             name: session?.name || "",
             email: currentUser?.user?.email || "",
             image: currentUser?.user?.image || "",
@@ -40,8 +40,8 @@ const NavUser = ({ currentUser,  session }: NavUserProps) => {
 
     return (
         <div>            
-            {!!session?.id ? (       
-                <SignedInUser name={session?.name || ""} />
+            {!!userData?.id ? (       
+                <SignedInUser name={userData?.name || ""} />
             ) : (
                 <Link href="/sign-in">
                     <div className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 cursor-pointer">
