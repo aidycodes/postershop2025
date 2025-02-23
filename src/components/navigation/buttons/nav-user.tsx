@@ -40,8 +40,8 @@ const NavUser = ({ currentUser,  session }: NavUserProps) => {
 
     return (
         <div>            
-            {!!userData?.id ? (       
-                <SignedInUser name={userData.name || ""} />
+            {!!session?.id ? (       
+                <SignedInUser name={session?.name || ""} />
             ) : (
                 <Link href="/sign-in">
                     <div className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 cursor-pointer">
