@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
     const session = await auth.api.getSession({
         headers: await headers()
       })
+    console.log(session, 'session')
     if(session?.user){
         const currentUser = await db.select().from(user).where(eq(user.id, session.user.id))
         return NextResponse.json({user: currentUser[0]})
