@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { cn } from "@/lib/utils"
 import { useState, useEffect } from "react"
+import { UserSession } from "@/app/layout"
+import type { UserDetails } from "@/components/navigation/navbar"
 
 const USER_VALIDATOR = z.object({
     name: z.string().min(1, "Name is required"),
@@ -34,7 +36,7 @@ export interface User {
     createdAt: string;
     updatedAt: string
 }
-export const UserForm = () => {
+export const UserForm = ({currentUser, session}: {currentUser: UserDetails | null, session: UserSession | null}) => {
     const [showToast, setShowToast] = useState(false)
     const queryClient = useQueryClient()
     const { data, isLoading } = useQuery({
@@ -43,6 +45,21 @@ export const UserForm = () => {
             const res = await client.users.me.$get()
             return res.json()
         },
+        initialData: {
+            id: session?.id || "",
+            name: session?.name || "ddd",
+            email: session?.email || "",
+            emailVerified: session?.emailVerified || false,
+            image: session?.image || "",
+            phone: currentUser?.user?.phone || "",
+            city: currentUser?.user?.city || "",
+            country: currentUser?.user?.country || "",
+            postal_code: currentUser?.user?.postal_code || "",
+            address: currentUser?.user?.address || "",
+            createdAt: currentUser?.user?.createdAt || "",
+            updatedAt: currentUser?.user?.updatedAt || ""
+        }
+      
         
     })
 
@@ -61,16 +78,17 @@ export const UserForm = () => {
     })
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<UserForm>({
         resolver: zodResolver(USER_VALIDATOR),
+      
+        mode: "onBlur",
         defaultValues: {
-            name: data?.name ?? "",
-            email: data?.email ?? "",
-            phone: data?.phone ?? "",
-            city: data?.city ?? "",
-            country: data?.country ?? "",
-            postal_code: data?.postal_code ?? "",
-            address: data?.address ?? "",
-        },
-        mode: "onBlur"
+            name: data?.name || "",
+            email: data?.email || "",
+            phone: data?.phone || "",
+            city: data?.city || "",
+            country: data?.country || "",
+            postal_code: data?.postal_code || "",
+            address: data?.address || ""
+        }
     })
     const onSubmit: SubmitHandler<UserForm> = (data) => {
        updateUser(data)
@@ -85,7 +103,7 @@ export const UserForm = () => {
     }, [showToast])
     return (
         <>
-            <Toast message="User updated successfully" show={showToast} onClose={() => {}} classNames="bg-green-600/80 shadow-xl border border-green-400 " position="p-6 top-0 right-0 z-50" />
+            {/* <Toast message="User updated successfully" show={showToast} onClose={() => {}} classNames="bg-green-600/80 shadow-xl border border-green-400 " position="p-6 top-0 right-0 z-50" /> */}
         <div className="mb-2 relative">
             <div className="overflow-hidden relative">
             <form className="flex flex-col  gap-1 " onSubmit={handleSubmit(onSubmit)}>

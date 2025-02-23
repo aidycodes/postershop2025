@@ -18,6 +18,24 @@ interface NavbarProps {
   session?: UserSession | null; // Make it optional and allow null
 }
 
+const userSchema = z.object({
+  user: z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  emailVerified: z.boolean(),
+  image: z.string(),
+  phone: z.string(),
+  city: z.string(),
+  country: z.string(),
+  postal_code: z.string(),
+  address: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  })
+})
+export type UserDetails = z.infer<typeof userSchema>
+
 const Navbar = async({categories, session}: NavbarProps) => {
 
   const originalHeaders = await headers();
@@ -26,8 +44,13 @@ const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}api/v1/events/cart`, 
   headers: headersList,
   credentials: 'include'
 })
-console.log(res, 'res')
+const authRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}api/v1/events/user`, {
+  headers: headersList,
+  credentials: 'include'
+})
+
 const cartData: CartData = await res.json()
+const userData: UserDetails = await authRes.json()
 
     return (
         <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -41,7 +64,7 @@ const cartData: CartData = await res.json()
             <div className="flex items-center space-x-4">
               <NavSearch />
               <NavCart isSignedIn={false} cart={cartData} />
-              <NavUser isSignedIn={session ? true : false} name={session?.name || "User"} />
+              <NavUser isSignedIn={session ? true : false} userData={userData} session={session}  />
                <SignOut />
             
             </div>
