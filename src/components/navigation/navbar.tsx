@@ -44,7 +44,7 @@ const Navbar = async({categories, session}: NavbarProps) => {
   headers: headersList,
   credentials: 'include'
 })
-const authRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/user`, {
+const authRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}api/v1/events/user`, {
   headers: headersList,
   credentials: 'include'
 });
