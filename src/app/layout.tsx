@@ -17,9 +17,9 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.webp" }],
 }
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
-export const fetchCache = 'force-no-store'
+// export const dynamic = 'force-dynamic'
+// export const revalidate = 0
+// export const fetchCache = 'force-no-store'
 
 export interface UserSession {
   id: string;
@@ -37,16 +37,16 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const headersList = await headers()
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 60 * 1000, // 1 minute
-        refetchOnMount: false,
-        refetchOnWindowFocus: false,
-      },
-    },
-  })
-
+  // const queryClient = new QueryClient({
+  //   defaultOptions: {
+  //     queries: {
+  //       staleTime: 60 * 1000, // 1 minute
+  //       refetchOnMount: false,
+  //       refetchOnWindowFocus: false,
+  //     },
+  //   },
+  // })
+ 
 
   const categories = await client.products.getCategorys.$get()
   const categoriesData: {data: Category[]} = await categories.json() 
@@ -99,15 +99,12 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-
-        <Providers>
-         
+        <Providers>      
           <PromotionBanner promotion="Save now up to 20% off for new customers with code: " showPromotion={true} code="NEW20" />
           <Navbar categories={categoriesData.data} session={session?.user as UserSession | null} />
             {children}
           <Footer blurb="Curating beautiful posters for your space since 2024."
-          storeName="Poster Shop" infoPages={["Shipping", "Returns", "FAQ", "Contact Us"]} />
-          
+          storeName="Poster Shop" infoPages={["Shipping", "Returns", "FAQ", "Contact Us"]} />         
         </Providers>
       </body>
     </html>

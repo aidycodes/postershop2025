@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { cn } from "@/lib/utils"
 import { useState, useEffect } from "react"
+import { CurrentUser } from "@/components/navigation/navbar"
 
 const USER_VALIDATOR = z.object({
     name: z.string().min(1, "Name is required"),
@@ -34,7 +35,7 @@ export interface User {
     createdAt: string;
     updatedAt: string
 }
-export const UserForm = () => {
+export const UserForm = ({currentUser}: {currentUser: CurrentUser}) => {
     const [showToast, setShowToast] = useState(false)
     const queryClient = useQueryClient()
     const { data, isLoading } = useQuery({
@@ -43,6 +44,7 @@ export const UserForm = () => {
             const res = await client.users.me.$get()
             return res.json()
         },
+        initialData: currentUser.user
         
     })
 

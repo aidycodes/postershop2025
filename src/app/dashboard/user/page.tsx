@@ -5,8 +5,10 @@ import { redirect } from "next/navigation"
 import { client } from "@/lib/client"
 import { User } from "./user-form"
 import { cookies } from "next/headers"
-
+import { CurrentUser } from "@/components/navigation/navbar"
 const UserPage = async () => {
+  const originalHeaders = await headers();
+  const headersList = new Headers(originalHeaders);
   const session = await auth.api.getSession({
     headers: await headers()
 })
@@ -14,6 +16,11 @@ if(!session) {
   redirect('/sign-in')
     
 }
+const authRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/events/user`, {
+  headers: headersList,
+  credentials: 'include'
+});
+const userData: CurrentUser = await authRes.json()
 
 
     return (
@@ -23,7 +30,7 @@ if(!session) {
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold mb-4">User Details</h2>
                 <div className="space-y-4 w-full mx-auto ">
-                  <UserForm />
+                  <UserForm currentUser={userData} />
                 </div>
             
             </div>
