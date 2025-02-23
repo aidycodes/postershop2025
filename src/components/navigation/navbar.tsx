@@ -69,6 +69,7 @@ console.log(userData, 'userData')
               <NavCart isSignedIn={false} cart={cartData} />
               <NavUser 
                 currentUser={userData} 
+                session={session}
               />
                <SignOut />
             

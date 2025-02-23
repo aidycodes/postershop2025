@@ -44,8 +44,6 @@ export const UserForm = ({currentUser}: {currentUser: CurrentUser}) => {
             const res = await client.users.me.$get()
             return res.json()
         },
-        initialData: currentUser.user
-        
     })
 
     const { mutate: updateUser, isPending } = useMutation({

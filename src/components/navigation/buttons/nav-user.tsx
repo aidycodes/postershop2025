@@ -6,13 +6,15 @@ import SignedInUser from "./signed-in-user"
 import { useQuery } from "@tanstack/react-query"
 import { client } from "@/lib/client"
 import type { CurrentUser } from "../navbar"
+import type { UserSession } from "@/app/layout"
 
 interface NavUserProps {
 
     currentUser: CurrentUser | null;
+    session: UserSession | null | undefined
 }
 
-const NavUser = ({ currentUser }: NavUserProps) => {
+const NavUser = ({ currentUser,  session }: NavUserProps) => {
     console.log(currentUser, 'currentUser')
     const { data: userData } = useQuery({
         queryKey: ["user"],
@@ -20,7 +22,20 @@ const NavUser = ({ currentUser }: NavUserProps) => {
             const res = await client.users.me.$get()
             return res.json()
         },
-        initialData: currentUser?.user
+        initialData: {
+            id: currentUser?.user?.id || "",
+            name: session?.name || "",
+            email: currentUser?.user?.email || "",
+            image: currentUser?.user?.image || "",
+            createdAt: currentUser?.user?.createdAt || "",
+            updatedAt: currentUser?.user?.updatedAt || "",
+            emailVerified: currentUser?.user?.emailVerified || false, 
+            phone: currentUser?.user?.phone || "",
+            city: currentUser?.user?.city || "",
+            country: currentUser?.user?.country || "",
+            postal_code: currentUser?.user?.postal_code || "",
+            address: currentUser?.user?.address || "",
+        }
     });
 
     return (
