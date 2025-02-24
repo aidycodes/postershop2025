@@ -9,6 +9,7 @@ import { orders } from "@/server/db/schema"
 import { cart } from "@/server/db/schema"
 import { cartitem } from "@/server/db/schema"
 import { getSignedCookie } from "hono/cookie"
+import { HTTPException } from "hono/http-exception"
 //zod schema for input
 const createCheckoutSessionSchema = z.object({
   rawItems: z.array(z.object({}).passthrough()),
@@ -69,21 +70,26 @@ getSuccessfulOrder: publicProcedure
         let guestToken = await getSignedCookie(c, secret)
         const session = await auth.api.getSession({
           headers: c.req.raw.headers
-        })
+        }) 
         const order = await db.select().from(orders).where(eq(orders.stripe_id, stripeId))
+        if(!order){
+          throw new HTTPException(404, {
+            message: 'Order not found'
+          })
+        }
         if(session){
           const cartid = await db.select({id: cart.id}).from(cart).where(eq(cart.user_id, session.session.userId))
           if(cartid[0]){
           const deleteCartItems = await db.delete(cartitem).where(eq(cartitem.cartid, cartid[0].id))
         } 
-        else {
-          const cartid = await db.select({id: cart.id}).from(cart).where(eq(cart.guest_token, guestToken.guestCartID as string))
-          if(cartid[0]){
-            const deleteCartItems = await db.delete(cartitem).where(eq(cartitem.cartid, cartid[0].id))
-          }
+      }
+      if(guestToken) {
+        const cartid = await db.select({id: cart.id}).from(cart).where(eq(cart.guest_token, guestToken.guestCartID as string))
+        if(cartid[0]){
+          const deleteCartItems = await db.delete(cartitem).where(eq(cartitem.cartid, cartid[0].id))
         }
       }
-        return c.superjson(order)
+      return c.superjson(order)
     })
 })
     
