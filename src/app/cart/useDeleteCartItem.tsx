@@ -1,6 +1,6 @@
 import { client } from "@/lib/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { CartItemType } from "@/server/routers/guest-cart-router"
+import { CartItemType } from "@/server/routers/cart-router"
 
 const useDeleteCartItem = (id: string) => {
     const queryClient = useQueryClient()

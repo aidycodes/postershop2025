@@ -1,4 +1,4 @@
-import { CartItemType } from "@/server/routers/guest-cart-router"
+import { CartItemType } from "@/server/routers/cart-router"
 import { client } from "@/lib/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
