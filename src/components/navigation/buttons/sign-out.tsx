@@ -27,6 +27,7 @@ const SignOut = () => {
       startTransition(async () => {
           await authClient.signOut()
           queryClient.setQueryData(['user'] , null)
+          queryClient.setQueryData(['cart'] , {cart:{id:123}, items:[]})
           setIsLoading(false)
           router.push('/')
       })

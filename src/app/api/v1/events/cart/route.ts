@@ -48,13 +48,5 @@ export async function GET(req: NextRequest) {
 
               
             }
-            return NextResponse.json({cart: {id:123}, items: [{cartid:123, productid:123, quantity:1, price:123},
-               {cartid:123, productid:123, quantity:1, price:123}, 
-               {cartid:123, productid:123, quantity:1, price:123}, 
-               {cartid:123, productid:123, quantity:1, price:123}, 
-               {cartid:123, productid:123, quantity:1, price:123}, 
-               {cartid:123, productid:123, quantity:1, price:123}, 
-               {cartid:123, productid:123, quantity:1, price:123}, 
-               
-              ]})
+            return NextResponse.json({cart: {id:123}, items: []})
 }

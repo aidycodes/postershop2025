@@ -98,17 +98,17 @@ export async function POST(req: NextRequest) {
                 const price = item?.price?.unit_amount || 0;
 
                 if (quantity !== undefined && price !== undefined) {
+                    const productOptions = await db.select().from(products)
+                                            .where(eq(products.id, product.metadata.db as string))    //get product for options 
                     const orderItem = await db.insert(orderitem).values({
                         id: createId(),
                         orderid: order?.[0]?.id,
-                        productid: product.id,
+                        productid: productOptions?.[0]?.id || product.id,
                         productname: product.name,
                         productimage: product.images[0],
                         quantity: Number(quantity),
                         price: price.toString(),
                     });
-                    const productOptions = await db.select().from(products)
-                                            .where(eq(products.id, product.metadata.db as string))    //get product for options 
                         if(productOptions[0]) {   
                         const options = productOptions?.[0]?.options  // get options
                         const parsedOptions = jsonbSchema.parse(options); //check if options are valid
@@ -156,17 +156,17 @@ export async function POST(req: NextRequest) {
                         const price = item?.price?.unit_amount || 0;
         
                         if (quantity !== undefined && price !== undefined) {
+                            const productOptions = await db.select().from(products)
+                                            .where(eq(products.id, product.metadata.db as string))    //get product for options 
                             const orderItem = await db.insert(orderitem).values({
                                 id: createId(),
                                 orderid: guestorder?.[0]?.id,
-                                productid: product.id,
+                                productid: productOptions?.[0]?.id || product.id, 
                                 productname: product.name,
                                 productimage: product.images[0],
                                 quantity: Number(quantity),
                                 price: price.toString(),
                             });
-                            const productOptions = await db.select().from(products)
-                                            .where(eq(products.id, product.metadata.db as string))    //get product for options 
                         if(productOptions[0]) {   
                         const options = productOptions?.[0]?.options  // get options
                         const parsedOptions = jsonbSchema.parse(options); //check if options are valid

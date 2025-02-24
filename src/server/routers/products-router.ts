@@ -119,12 +119,12 @@ getBestSellers: publicProcedure.query(async ({ c, ctx }) => {
   const { db } = ctx
   const sales = await db
   .select({
-    productName: orderitem.productname,
-    totalCount: sql<number>`sum(${orderitem.quantity}) * count(*)`,
+    productId: orderitem.productid  ,
+    totalCount: sql<number>`sum(${orderitem.quantity})`
   })
   .from(orderitem)
-  .groupBy(orderitem.productname)
-  .orderBy(sql`sum(${orderitem.quantity}) * count(*) desc`)
+  .groupBy(orderitem.productid)
+  .orderBy(sql`sum(${orderitem.quantity}) desc`)
   .limit(8);
 console.log(sales, 'sales')
   if(sales.length === 0) {
@@ -139,8 +139,8 @@ console.log(sales, 'sales')
     .from(products)
     .where(
       inArray(
-        products.productname, 
-        sales.map(sale => sale.productName).filter((name): name is string => name !== null)
+        products.id, 
+        sales.map(sale => sale.productId).filter((name): name is string => name !== null)
       )
     );
   return c.json({
