@@ -239,7 +239,7 @@ const selectedSizeStock = options?.Stock?.[
 
       {/* Customers Also Bought Section */}
       <div className="mt-16">
-      <Suggestions title="Customers Also Bought" />
+      <Suggestions meta={id} type="related" title="Customers Also Bought" />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { products, categories, productsToCategory, orderitem } from "@/server/db/schema"
-import { desc, eq, ilike, sql, inArray } from "drizzle-orm"
+import { desc, eq, ilike, sql, inArray, and, ne } from "drizzle-orm"
 import { z } from "zod"
 import { j, publicProcedure, protectedProcedure } from "../jstack"
 
@@ -126,7 +126,7 @@ getBestSellers: publicProcedure.query(async ({ c, ctx }) => {
   .groupBy(orderitem.productid)
   .orderBy(sql`sum(${orderitem.quantity}) desc`)
   .limit(8);
-console.log(sales, 'sales')
+    console.log(sales, 'sales')
   if(sales.length === 0) {
     console.log('no sales')
     const data = await db.select().from(products).limit(8)
@@ -146,5 +146,57 @@ console.log(sales, 'sales')
   return c.json({
     data: bestSellers
   })
+}),
+getMetaProducts: publicProcedure.input(z.object({
+  meta: z.string().min(1), type: z.enum(["category", "related"])
+})).query(async ({ c, ctx, input }) => {
+  const { meta, type } = input
+  const { db } = ctx
+
+        const relatedOrders = await db
+        .select({ orderId: orderitem.orderid })
+        .from(orderitem)
+        .where(eq(orderitem.productid, meta));
+      
+      if (relatedOrders.length === 0) {
+        return c.json({
+          data: [],
+          message: "No related products found"
+        });
+      }
+      
+      // Extract just the orderIds from the results
+      const orderIds = relatedOrders.map(order => order.orderId);
+      
+      // Find all products from these orders except the original product
+      const relatedProducts = await db
+        .select({
+          productId: orderitem.productid,
+          quantity: sql<number>`sum(${orderitem.quantity})`,
+          orderCount: sql<number>`count(distinct ${orderitem.orderid})`
+        })
+        .from(orderitem)
+        .where(
+          and(
+            inArray(orderitem.orderid, orderIds.filter(id => id !== null)),
+            ne(orderitem.productid, meta) // Exclude the original product
+          )
+        )
+        .groupBy(orderitem.productid)
+        .orderBy(sql`sum(${orderitem.quantity}) desc`)
+        .limit(4);
+      
+      // If you need full product details, join with the products table
+      const detailedProducts = await db
+        .select()
+        .from(products)
+        .where(inArray(products.id, relatedProducts.map(p => p.productId).filter(id => id !== null)));
+      console.log(detailedProducts, 'detailedProducts')
+
+      return c.superjson({
+         data: detailedProducts
+  })
+
+
 })
 })

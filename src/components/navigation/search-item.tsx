@@ -35,7 +35,7 @@ const SearchItem = ({ productName, price, stock, image, onClose }: SearchItemPro
         <div className="flex items-center items-center gap-2 text-sm text-gray-600">
           <span>${price}</span>
           <span>•</span>
-          <div className=""><ProductStock stock={stock} classNames="h-2 p-2 mt-2" /></div>
+        
         </div>
       </div>
     </div>
