@@ -31,20 +31,16 @@ export type CartData = {
 }
 
 const NavCart = ({ isSignedIn, cart }: NavCartProps) => {
-
-   
     const { data } = useQuery({
         queryKey: ['cart'],
         queryFn: async () => {
             const res = await client.cart.getCart.$get();
-
             if (res.status !== 200) {
                 throw new Error("Failed to fetch cart");
-            }
-
-            
+            }         
             return res.json();
         },
+        staleTime: 1000 * 60,
         initialData: {
             cart: cart.cart,
             items: cart.items

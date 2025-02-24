@@ -8,13 +8,14 @@ import EmptyCart from './EmptyCart';
 import LoadingCart from './LoadingCart';
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { CartData } from "@/components/navigation/buttons/nav-cart";
 
 type SelectedOptions = {
   frame?: boolean;
   [key: string]: any;
 }
 
-const Cart = () => {
+const Cart = ({cart}: {cart: CartData}) => {
   const { data, isLoading, isPending: isCartLoading, error: cartError } = useQuery({
     queryKey: ['cart'],
     queryFn: async() => {
@@ -23,6 +24,11 @@ const Cart = () => {
       return res.json()
       }
       throw new Error('Failed to fetch cart')
+    },
+    staleTime: 1000 * 60,
+    initialData: {
+      cart: cart.cart,
+      items: cart.items
     }
   })
 

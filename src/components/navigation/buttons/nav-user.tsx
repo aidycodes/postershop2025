@@ -16,6 +16,7 @@ const NavUser = ({isSignedIn, userData, session}: {isSignedIn: boolean, userData
             const res = await client.users.me.$get()
             return res.json()
         },
+        staleTime: 1000 * 60 * 5, // 5 minutes
         initialData: {
             id: session?.id || "",
             name: session?.name || "",

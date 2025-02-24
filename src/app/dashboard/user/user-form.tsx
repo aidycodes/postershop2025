@@ -39,15 +39,16 @@ export interface User {
 export const UserForm = ({currentUser, session}: {currentUser: UserDetails | null, session: UserSession | null}) => {
     const [showToast, setShowToast] = useState(false)
     const queryClient = useQueryClient()
-    const { data, isLoading } = useQuery({
+    const { data } = useQuery({
         queryKey: ['user'],
         queryFn: async () => {
             const res = await client.users.me.$get()
             return res.json()
         },
+        staleTime: 1000 * 60 * 5, // 5 minutes
         initialData: {
             id: session?.id || "",
-            name: session?.name || "ddd",
+            name: session?.name || "",
             email: session?.email || "",
             emailVerified: session?.emailVerified || false,
             image: session?.image || "",
