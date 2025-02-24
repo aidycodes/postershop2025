@@ -34,7 +34,7 @@ const Newsletter = ({bannerImage, bannerTitle, bannerSubtitle}: {bannerImage?: s
           <form action={formAction} className="border-l border-gray-300 px-4 sm:px-6 lg:px-8">
             <div className="px-4 py-8">
               <h3 className="text-2xl font-semibold mb-4">Sign up and never miss a deal</h3>
-              <p className="text-gray-600 mb-6">Join our newsletter for the latest discounts and PosterHub goodies</p>
+              <p className="text-gray-600 mb-6">Join our newsletter for the latest discounts and PrintPerfect goodies</p>
               <div className="flex mb-4">
                 <input 
                   type="email"

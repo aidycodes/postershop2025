@@ -58,7 +58,7 @@ const userData: UserDetails = await authRes.json()
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 md:hidden" />
-              <ShopName name="PosterHub" direction="forward" />
+              <ShopName name="PrintPerfect" direction="forward" />
             </div>    
             <NavLinks categories={categories} />
             <div className="flex items-center space-x-4">
