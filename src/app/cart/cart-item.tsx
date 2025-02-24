@@ -1,5 +1,5 @@
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { CartItemType } from '@/server/routers/guest-cart-router';
+import { CartItemType } from "@/server/routers/cart-router"
 import useUpdateCart from './useUpdateCart';
 import useDeleteCartItem from './useDeleteCartItem';
 import Link from 'next/link';
