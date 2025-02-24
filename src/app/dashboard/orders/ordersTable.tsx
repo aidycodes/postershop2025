@@ -44,7 +44,7 @@ const OrderTable = () => {
 
     const handlePageChange = (newPage: number) => {
         const totalCount = data?.orderCount ?? 0;
-        const totalPages = Math.ceil(totalCount / 10);
+        const totalPages = Math.max(1, Math.ceil(totalCount / 10));
         
         if (newPage >= 1 && newPage <= totalPages) {
             setPage(newPage);
@@ -177,13 +177,13 @@ const OrderTable = () => {
                             Previous
                         </button>
                      <span className="text-sm text-gray-600 text-center md:mr-6">
-                        Page {page} of {Math.ceil(data?.orderCount ? data?.orderCount / 10 :  0)}
+                        Page {page} of {Math.max(1, Math.ceil(data?.orderCount ? data?.orderCount / 10 :  0))}
                      </span>
                     
                         <button 
                             className={cn(`px-3 ml-auto py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer`, 
-                                page === Math.ceil(data?.orderCount ? data?.orderCount / 10 :  0) ? 'opacity-50 cursor-default hover:text-gray-600' : '')} 
-                            disabled={page === Math.ceil(data?.orderCount ? data?.orderCount / 10 :  0)} 
+                                page === Math.max(1, Math.ceil(data?.orderCount ? data?.orderCount / 10 :  0)) ? 'opacity-50 cursor-default hover:text-gray-600' : '')} 
+                            disabled={page === Math.max(1, Math.ceil(data?.orderCount ? data?.orderCount / 10 :  0))} 
                             onClick={() => handlePageChange(page + 1)}
                         >
                             Next

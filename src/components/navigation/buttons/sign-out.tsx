@@ -28,6 +28,11 @@ const SignOut = () => {
           await authClient.signOut()
           queryClient.setQueryData(['user'] , null)
           queryClient.setQueryData(['cart'] , {cart:{id:123}, items:[]})
+          queryClient.removeQueries({ queryKey: ['orders'], exact: false });
+          queryClient.setQueryData(['orders'] , {ordersWithItems: [], orderCount: 0})
+          queryClient.invalidateQueries({queryKey: ['orders']})
+          queryClient.invalidateQueries({queryKey: ['cart']})
+          queryClient.invalidateQueries({queryKey: ['user']})
           setIsLoading(false)
           router.push('/')
       })
