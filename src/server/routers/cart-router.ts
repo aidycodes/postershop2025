@@ -157,6 +157,7 @@ export const cartRouter = j.router({
 // guest logic below
 
     if(!guestToken.guestCartID){
+      console.log('no guest cart id')
         const id = createId()
         const guestCartID = await setSignedCookie(c, "guestCartID", id, secret, {
           path: "/",

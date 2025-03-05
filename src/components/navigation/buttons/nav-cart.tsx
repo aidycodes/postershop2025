@@ -40,7 +40,9 @@ const NavCart = ({ isSignedIn, cart }: NavCartProps) => {
             }         
             return res.json();
         },
-        staleTime: 1000 * 60,
+        staleTime: 0,
+        refetchOnMount: true,
+        refetchOnWindowFocus: false,
         initialData: {
             cart: cart.cart,
             items: cart.items
